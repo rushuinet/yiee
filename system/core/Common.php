@@ -35,8 +35,8 @@ function VIEW($name,$data=array()){
 }
 
 //日志信息
-function log_msg($code,$msg){
-	die($msg);
+function log_msg($type,$msg){
+	die($type.' : '.$msg);
 }
 /**
  * 变量为空时的返回	
