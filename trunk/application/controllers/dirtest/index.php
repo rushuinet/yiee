@@ -26,6 +26,8 @@
 			echo $this->rs;
 			echo '<br />';
 			echo Yiee::$uri->complete;
+			echo '<br />';
+			var_dump(Yiee::$uri->m_arr);
 			VIEW('test',$data);
 		}
 	}

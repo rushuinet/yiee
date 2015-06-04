@@ -18,9 +18,18 @@ require_once(APP_PATH.'config/constants.php');
 require_once(SYS_PATH.'core/Common.php');
 //引入配置
 require_once(APP_PATH.'config/config.php');
+//引入自动加载配置
+require_once(APP_PATH.'config/autoload.php');
 
 //URI
 require_once(SYS_PATH.'core/URI.php');
+
+//数据库操作类
+require_once(SYS_PATH.'database/DB.php');
+//自动数据库链接
+if( !empty($autoload['dblink']) ){
+	DB::init($config['database'][$autoload['dblink']]['dbdriver'],$config['database'][$autoload['dblink']]);
+}
 
 //公共控制器
 require_once(SYS_PATH.'core/Controller.php');
@@ -39,6 +48,7 @@ class Yiee{
 		$URI->m_name = is_set($URI->m_name,self::$config['default_method']);
 		self::$uri = $URI;
 	}
+
 
 	//运行初始化
 	public static function run($config){
