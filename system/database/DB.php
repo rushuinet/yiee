@@ -18,14 +18,19 @@ class DB{
 		self::$db->connect($config);
 	}
 
+	//设置字段
+	public function fields($param){
+		return self::$db->fields($param);
+	}
+
 	//设置表名
 	public function table($table){
 		return self::$db->table($table);
 	}
 
-	//设置字段
-	public function fields($param){
-		return self::$db->fields($param);
+	//join
+	public function join($table,$on='',$type='left'){
+		return self::$db->join($table,$on,$type);
 	}
 
 	//设置条件
@@ -63,13 +68,23 @@ class DB{
 		return self::$db->last_query();
 	}
 	
-	//返回最后一个查询中自动生成的 ID
+	//插入记录
 	public function insert($table,$data=array()){
 		return self::$db->insert($table,$data);
 	}
+
+	//更新记录
+	public function update($table,$data=array(),$where=''){
+		return self::$db->update($table,$data,$where);
+	}
+
+	//删除记录
+	public function del($table,$where=''){
+		return self::$db->del($table,$where);
+	}
 	
 	//信任的驱动
-	private function _trust($dbtype){
+	private  static function _trust($dbtype){
 		$arr = array('mysql','mysqli');
 		if(in_array($dbtype,$arr)){
 			return true;

@@ -11,8 +11,9 @@ class DB_mysqli{
 
 	private $links = false;					//数据库链接标识
 	//sql对象
-	private $table = '';					//表名
 	private $fields = '';					//字段
+	private $table = '';					//表名
+	private $join = '';						//连表
 	private $where = '';					//条件
 	private $limit = '';					//limit
 	//查询结果
@@ -62,20 +63,7 @@ class DB_mysqli{
 		}	
 	}
 
-	//设置表名
-	public function table($table){
-
-		$this->del_query();
-
-		$table = strval($table);
-		if(empty($table)){
-			self::error('表名不正确.');
-		}
-		$this->table = $table;
-		return $this;
-	}
-
-	//设置字段
+	//字段
 	public function fields($param){
 
 		$this->del_query();
@@ -88,7 +76,32 @@ class DB_mysqli{
 		return $this;
 	}
 
-	//设置条件
+	//表名
+	public function table($table){
+
+		$this->del_query();
+
+		$table = strval($table);
+		if(empty($table)){
+			self::error('表名不正确.');
+		}
+		$this->table = $table;
+		return $this;
+	}
+
+	//join
+	public function join($table,$on='',$type='left'){
+		if(is_array($table)){
+			foreach ($table as $v){
+				$this->join .= ' '.strtoupper($v[2]) . ' JOIN `'.$v[0].'` ON '.$v[1];
+			}
+		}else{
+			$this->join .= ' '.strtoupper($type) . ' JOIN `'.$table.'` ON '.$on;
+		}
+		return $this;
+	}
+
+	//条件
 	public function where($param){
 
 		$this->del_query();
@@ -107,7 +120,7 @@ class DB_mysqli{
 		return $this;
 	}
 
-	//设置limit
+	//limit
 	public function limit($limit='',$offset=''){
 
 		$this->del_query();
@@ -142,7 +155,7 @@ class DB_mysqli{
 			$where = ' WHERE '.$this->where;
 		}
 
-		$sql = 'SELECT '.$fields.' FROM `'.$table.'`'.$where.$this->limit;
+		$sql = 'SELECT '.$fields.' FROM `'.$table.'` '.$this->join.$where.$this->limit;
 		return $this->query($sql);
 	}
 
@@ -157,40 +170,6 @@ class DB_mysqli{
 		return $this;
 	}
 
-	/**
-	 * 插入数据(支持批量插入)
-	 * param	$table	表名
-	 * param	$data	数据array('name'=>'小王','age'=>18);
-	 * @E-mail	rushui@qq.com
-	 * @author	Rushui
-	 */
-	public function insert($table,$data=array()){
-		//检测是否为二维数组(批量插入)
-		if( isset($data[0]) && in_array($data[0])){
-			$keys = ''; $vals = ''; $str = '';
-			foreach ($data as $dv ){
-				foreach ($dv as $k=>$v ){
-					$v = mysqli_real_escape_string($this->links,$v);
-					$keys .= '`'.$k.'`,';
-					$vals .= '"'.$v.'",';
-				}
-				$str .= '('.trim($keys,',').' VALUES('.trim($vals,',').') ';
-				$keys = '';	$vals = '';
-			}
-			$sql = "INSERT INTO `".$table."` " . $str;
-		}else{
-			foreach ($data as $k=>$v ){
-				$v = mysqli_real_escape_string($this->links,$v);
-				$key[] = '`'.$k.'`';
-				$value[] = '"'.$v.'"';
-			}
-			$keys = implode(',',$key);
-			$values = implode(',',$value);
-			$sql = "INSERT INTO `".$table."` (".$keys.") VALUES(".$values.")";
-		}
-		$this->query($sql);
-		return mysqli_insert_id($this->links);
-	}
 
 
 	//删除查询对象
@@ -236,8 +215,88 @@ class DB_mysqli{
 		return mysqli_num_rows($this->res);
 	}
 
+	/**
+	 * 插入记录(支持批量插入)
+	 * param	$table	表名
+	 * param	$data	数据array('name'=>'小王','age'=>18) || array(array('name'=>'小王','age'=>18),array('name'=>'小李','age'=>20))
+	 * return	insert_id
+	 * @E-mail	rushui@qq.com
+	 * @author	Rushui
+	 */
+	public function insert($table,$data=array()){
+		//检测是否为二维数组(批量插入)
+		if( isset($data[0]) && is_array($data[0])){
+			$key = ''; $val = ''; $keys = ''; $vals = ''; $str = '';
+			foreach ($data as $dv ){
+				if(!is_array($dv)){self::error( '数据格式不正确.' );}	//不是正确数组返回错误
+				foreach ($dv as $k=>$v ){
+					$v = mysqli_real_escape_string($this->links,$v);
+					$key .= '`'.$k.'`,';
+					$val .= '"'.$v.'",';
+				}
+				$keys = '('.trim($key,',').')';
+				$vals .=  '('.trim($val,',').') ,';
+				$key = ''; $val = '';
+			}
+			$sql = "INSERT INTO `".$table."` " . $keys . ' VALUES ' . trim($vals,',');
+		}else{
+			foreach ($data as $k=>$v ){
+				$v = mysqli_real_escape_string($this->links,$v);
+				$key[] = '`'.$k.'`';
+				$value[] = '"'.$v.'"';
+			}
+			$keys = implode(',',$key);
+			$values = implode(',',$value);
+			$sql = "INSERT INTO `".$table."` (".$keys.") VALUES(".$values.")";
+		}
+		$this->query($sql);
+		$this->del_query();
+		return mysqli_insert_id($this->links);
+	}
+
+	/**
+	 * 更新记录
+	 * param	$table	表名
+	 * param	$data	数据array('name'=>'小王','age'=>18)
+	 * param	$where	更新条件(为整数时前面自动加id = )
+	 * return	affected_rows
+	 * @E-mail	rushui@qq.com
+	 * @author	Rushui
+	 */
+	public function update($table,$data,$where){
+		foreach($data as $k=>$v){
+			$v = mysqli_real_escape_string($this->links,$v);
+			$arr[] = "`".$k."`='".$v."'";
+		}
+		if(is_int($where)){
+			$where = '`id` ='.$where;
+		}
+		$str = implode(",",$arr);
+		$sql = "UPDATE `".$table."` SET ".$str." WHERE ".$where;
+		$this->query($sql);
+		return $this->affected_rows();
+	}
+
+	/**
+	 * 删除数据
+	 * param	$table	表名
+	 * param	$where	删除条件(为整数时前面自动加id = )
+	 * return	affected_rows
+	 * @E-mail	rushui@qq.com
+	 * @author	Rushui
+	 */
+	public function del($table,$where){
+		if(is_int($where)){
+			$where = '`id` ='.$where;
+		}
+		$sql = "DELETE FROM	`".$table."` WHERE ".$where;
+		$this->query($sql);
+		return $this->affected_rows();
+	}
+
 	//返回受影响行数
-	public  function affected_rows(){
+	private  function affected_rows(){
+		$this->del_query();
 		return mysqli_affected_rows($this->links);
 	}
 	
