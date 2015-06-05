@@ -1,11 +1,11 @@
 <?php
 /**
- * mysqli 数据库操作类(单例)
+ * mysql 数据库操作类(单例)
  * @E-mail	rushui@qq.com
  * @author	Rushui
  */
 
-class DB_mysqli{
+class DB_mysql{
 	
     private static $_instance = null;		//静态变量保存全局实例
 
@@ -36,7 +36,7 @@ class DB_mysqli{
 
 	//错误处理
 	public static function error($msg){
-		log_msg($msg,'mysqli');
+		log_msg($msg,'mysql');
 	}
 	
 	/**
@@ -52,12 +52,14 @@ class DB_mysqli{
 		}else{
 			extract($config);
 			$db_port = $db_port ? $db_port : '3306';
-			$link = mysqli_connect($hostname,$username,$password,$database,$db_port);
-			if(!$link){
-				self::error( mysqli_error($link) );
+			if(!($link = mysql_connect($hostname,$username,$password))){
+				self::error( mysql_error() );
+			}
+			if(!mysql_select_db($database,$link)){//mysql_select_db选择库的函数
+				self::error( mysql_error() );
 			}
 			//设置字符集
-			mysqli_set_charset($link,$char_set);
+			mysql_query("set names ".$char_set);
 			$this->links = $link;
 		}	
 	}
@@ -144,9 +146,9 @@ class DB_mysqli{
 
 	//查询
 	public function query($sql=''){
-		$this->res = mysqli_query($this->links,$sql);
+		$this->res = mysql_query($sql,$this->links);
 		if(!$this->res){
-			self::error( $sql . '<br />' . mysqli_error($this->links) );
+			self::error( $sql . '<br />' . mysql_error($this->links) );
 		}
 		$this->last_query = $sql;
 		$this->del_sql();
@@ -171,7 +173,7 @@ class DB_mysqli{
 	public function result(){
 		$this->result = array();
 		if( $this->num_rows() > 0){
-			while( $row = mysqli_fetch_assoc($this->res) ) {
+			while( $row = mysql_fetch_assoc($this->res) ) {
 				$this->result[] = $row;
 			}
 		}
@@ -182,7 +184,7 @@ class DB_mysqli{
 	public function result_one(){
 		$this->result = array();
 		if( $this->num_rows() > 0){
-			$row = mysqli_fetch_row($this->res);
+			$row = mysql_fetch_row($this->res);
 		}
 		return $row;
 	}
@@ -194,22 +196,22 @@ class DB_mysqli{
 	
 	//返回查询记录数
 	public  function num_rows(){
-		return mysqli_num_rows($this->res);
+		return mysql_num_rows($this->res);
 	}
 
 	//返回受影响行数
 	public  function affected_rows(){
-		return mysqli_affected_rows($this->res);
+		return mysql_affected_rows($this->res);
 	}
 	
 	//返回最后一个查询中自动生成的 ID
 	public function insert_id(){
-		return mysqli_insert_id($this->links);
+		return mysql_insert_id($this->links);
 	}
 	
 	//关闭链接
 	public function close(){
-		mysqli_close ( $this->links );		
+		mysql_close ( $this->links );		
 	}
 
 }

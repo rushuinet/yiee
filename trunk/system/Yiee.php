@@ -58,7 +58,7 @@ class Yiee{
 //		self::init_view();
 		//self::init_controllor();
 		//self::init_method();
-		C(self::$uri->c_dir,self::$uri->c_name, self::$uri->m_name);
+		C(self::$uri->c_dir,self::$uri->c_name, self::$uri->m_name, self::$uri->m_arr);
 	}
 
 }

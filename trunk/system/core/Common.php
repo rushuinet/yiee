@@ -13,11 +13,12 @@
  * @E-mail	rushui@qq.com
  * @author	Rushui
  */
-function C($dir,$name, $method){
+function C($dir,$name, $method,$params=array()){
 	require_once(SYS_PATH.'core/Controller.php');
 	require_once(APP_PATH.'controllers/'.$dir.$name.'.php');
 	$obj = new $name();
-	$obj->{$method}();
+	//$obj->{$method}();
+	call_user_func_array(array($obj, $method), $params);
 }
 //实例化model
 function M($name){
@@ -35,7 +36,7 @@ function VIEW($name,$data=array()){
 }
 
 //日志信息
-function log_msg($type,$msg){
+function log_msg($msg,$type='err'){
 	die($type.' : '.$msg);
 }
 /**

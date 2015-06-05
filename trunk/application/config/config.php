@@ -15,7 +15,7 @@ $config['database'] = array(
 		'password'=>'root',				//密码
 		'database'=>'rushui',			//数据库名
 		'char_set'=>'utf8',				//字符集
-		'dbdriver'=>'mysqli',			//链接方式
+		'dbdriver'=>'mysql',			//链接方式
 	),
 );
 
