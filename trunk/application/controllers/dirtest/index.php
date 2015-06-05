@@ -14,11 +14,12 @@
 
 			$re = DB::table('main_keylib')->where(array('status'=>'1'))->fields(array('id','title'))->limit(2,3)->get();
 			$row = $re->result();
-			$sql = $re->affected_rows();
+			$sql = $re->num_rows();
 
-			$arr = array(array('title'=>'小李'),array('title'=>'小王'));
-			$re = DB::insert('main_keylib',$arr);
-			var_dump($re);
+//			$arr = array('title'=>'小李323','ckey'=>'test144');
+//			$re = DB::del('main_keylib','id >118');
+			
+			var_dump($re,DB::last_query());
 
 			$data = array(
 				'title'=>'标题',
