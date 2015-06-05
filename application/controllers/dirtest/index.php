@@ -16,10 +16,9 @@
 			$row = $re->result();
 			$sql = $re->affected_rows();
 
-			$arr = array('title'=>'小王');
+			$arr = array(array('title'=>'小李'),array('title'=>'小王'));
 			$re = DB::insert('main_keylib',$arr);
-			$rid = $re->last_query();
-			var_dump($rid);
+			var_dump($re);
 
 			$data = array(
 				'title'=>'标题',
