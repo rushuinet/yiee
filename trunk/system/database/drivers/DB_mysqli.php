@@ -180,7 +180,7 @@ class DB_mysqli{
 			$sql = "INSERT INTO `".$table."` " . $str;
 		}else{
 			foreach ($data as $k=>$v ){
-				$v = mysql_real_escape_string($this->links,$v);
+				$v = mysqli_real_escape_string($this->links,$v);
 				$key[] = '`'.$k.'`';
 				$value[] = '"'.$v.'"';
 			}
