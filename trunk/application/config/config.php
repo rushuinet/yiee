@@ -13,9 +13,9 @@ $config['database'] = array(
 		'db_port'=>'3306',				//端口
 		'username'=>'root',				//用户名
 		'password'=>'root',				//密码
-		'database'=>'rushui',			//数据库名
+		'database'=>'test',			//数据库名
 		'char_set'=>'utf8',				//字符集
-		'dbdriver'=>'mysql',			//链接方式
+		'dbdriver'=>'mysqli',			//链接方式
 	),
 );
 

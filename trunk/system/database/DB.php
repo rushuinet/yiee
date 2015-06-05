@@ -64,8 +64,8 @@ class DB{
 	}
 	
 	//返回最后一个查询中自动生成的 ID
-	public function insert_id(){
-		return self::$db->insert_id();
+	public function insert(){
+		return self::$db->insert();
 	}
 	
 	//信任的驱动
