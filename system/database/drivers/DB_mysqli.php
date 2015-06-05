@@ -81,10 +81,11 @@ class DB_mysqli{
 		$this->del_query();
 
 		if(is_array($param)){
-			$this->fields = explode(',',$param);
+			$this->fields = '`'.implode('`,`',$param).'`';
 		}else{
 			$this->fields = $param;
 		}
+		return $this;
 	}
 
 	//设置条件
@@ -115,11 +116,12 @@ class DB_mysqli{
 		$offset = intval($offset);
 
 		if($limit > 0 && $offset == 0){
-			$this->limit = 'LIMIT '.$limit;
+			$this->limit = ' LIMIT '.$limit;
 		}
 		if($limit > 0 && $offset > 0){
-			$this->limit = 'LIMIT '.$offset.','.$limit;
+			$this->limit = ' LIMIT '.$offset.','.$limit;
 		}
+		return $this;
 	}
 
 	//拼装sql
@@ -130,6 +132,8 @@ class DB_mysqli{
 		}
 		if(empty($this->fields)){
 			$fields = '*';
+		}else{
+			$fields = $this->fields;
 		}
 		if( !empty($where) ){
 			$this->where($where);
@@ -138,7 +142,7 @@ class DB_mysqli{
 			$where = ' WHERE '.$this->where;
 		}
 
-		$sql = 'SELECT '.$fields.' FROM '.$table.$where.$this->limit;
+		$sql = 'SELECT '.$fields.' FROM `'.$table.'`'.$where.$this->limit;
 		return $this->query($sql);
 	}
 
@@ -151,6 +155,41 @@ class DB_mysqli{
 		$this->last_query = $sql;
 		$this->del_sql();
 		return $this;
+	}
+
+	/**
+	 * 插入数据(支持批量插入)
+	 * param	$table	表名
+	 * param	$data	数据array('name'=>'小王','age'=>18);
+	 * @E-mail	rushui@qq.com
+	 * @author	Rushui
+	 */
+	public function insert($table,$data=array()){
+		//检测是否为二维数组(批量插入)
+		if( isset($data[0]) && in_array($data[0])){
+			$keys = ''; $vals = ''; $str = '';
+			foreach ($data as $dv ){
+				foreach ($dv as $k=>$v ){
+					$v = mysqli_real_escape_string($this->links,$v);
+					$keys .= '`'.$k.'`,';
+					$vals .= '"'.$v.'",';
+				}
+				$str .= '('.trim($keys,',').' VALUES('.trim($vals,',').') ';
+				$keys = '';	$vals = '';
+			}
+			$sql = "INSERT INTO `".$table."` " . $str;
+		}else{
+			foreach ($data as $k=>$v ){
+				$v = mysql_real_escape_string($this->links,$v);
+				$key[] = '`'.$k.'`';
+				$value[] = '"'.$v.'"';
+			}
+			$keys = implode(',',$key);
+			$values = implode(',',$value);
+			$sql = "INSERT INTO `".$table."` (".$keys.") VALUES(".$values.")";
+		}
+		$this->query($sql);
+		return mysqli_insert_id($this->links);
 	}
 
 
@@ -180,9 +219,9 @@ class DB_mysqli{
 
 	//一条记录
 	public function result_one(){
-		$this->result = array();
+		$row = array();
 		if( $this->num_rows() > 0){
-			$row = mysqli_fetch_row($this->res);
+			$row = mysqli_fetch_assoc($this->res);
 		}
 		return $row;
 	}
@@ -199,13 +238,9 @@ class DB_mysqli{
 
 	//返回受影响行数
 	public  function affected_rows(){
-		return mysqli_affected_rows($this->res);
+		return mysqli_affected_rows($this->links);
 	}
 	
-	//返回最后一个查询中自动生成的 ID
-	public function insert_id(){
-		return mysqli_insert_id($this->links);
-	}
 	
 	//关闭链接
 	public function close(){

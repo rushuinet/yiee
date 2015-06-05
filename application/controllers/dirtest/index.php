@@ -12,8 +12,14 @@
 
 		public function index(){
 
-			$re1 = DB::query('SHOW COLUMNS FROM main_keylib')->result();
-			var_dump($re1);
+			$re = DB::table('main_keylib')->where(array('status'=>'1'))->fields(array('id','title'))->limit(2,3)->get();
+			$row = $re->result();
+			$sql = $re->affected_rows();
+
+			$arr = array('title'=>'小王');
+			$re = DB::insert('main_keylib',$arr);
+			$rid = $re->last_query();
+			var_dump($rid);
 
 			$data = array(
 				'title'=>'标题',
