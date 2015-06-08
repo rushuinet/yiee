@@ -14,31 +14,39 @@
  * @author	Rushui
  */
 function C($dir,$name, $method,$params=array()){
-	require_once(SYS_PATH.'core/Controller.php');
 	require_once(APP_PATH.'controllers/'.$dir.$name.'.php');
 	$obj = new $name();
 	//$obj->{$method}();
 	call_user_func_array(array($obj, $method), $params);
 }
+//日志信息
+function log_msg($msg,$type='err'){
+	die($type.' : '.$msg);
+}
 //实例化model
 function M($name){
 	$model_name = $name.'_model';
-	require_once(SYS_PATH.'core/Model.php');
 	require_once(APP_PATH.'models/'.$model_name.'.php');
 	$obj = new $model_name();
 	return $obj;
 }
 
 //加载视图
-function VIEW($name,$data=array()){
+function VIEW($name,$data=array(),$way=false){
+	$path = APP_PATH.'views/'.$name.'.php';
 	extract($data);
-	require_once(APP_PATH.'views/'.$name.'.php');
+	if($way===true){
+		ob_start ();
+		require_once($path);
+		$data = ob_get_contents();
+		ob_end_clean ();
+		return $data;
+	}else{
+		require_once($path);
+	}
+	
 }
 
-//日志信息
-function log_msg($msg,$type='err'){
-	die($type.' : '.$msg);
-}
 /**
  * 变量为空时的返回	
  * param	$value		变量值
