@@ -30,8 +30,10 @@ require_once(SYS_PATH.'database/DB.php');
 if( !empty($autoload['dblink']) ){
 	DB::init($config['database'][$autoload['dblink']]['dbdriver'],$config['database'][$autoload['dblink']]);
 }
+//系统model
+require_once(SYS_PATH.'core/Model.php');
 
-//公共控制器
+//系统控制器
 require_once(SYS_PATH.'core/Controller.php');
 
 

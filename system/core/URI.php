@@ -149,14 +149,14 @@ class URI {
 		return $data;
 	}
 
-	//属性重载
+	//重载(属性设置)
 	public function __set($name,$value){
 		if($name =='c_name' || $name=='m_name'){
 			$this->$name = $value;
 		}
 	}
 
-	//属性重载
+	//重载(属性获取)
 	public function __get($name){
 		return $this->$name;
 	}
