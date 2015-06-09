@@ -10,7 +10,7 @@ class DB{
 	//初始化
 	public static function init($dbtype, $config) {
 		if( !self::_trust($dbtype) ){
-			
+			log_msg('无效的数据库驱动！',__CLASS__);		//此处引用了公共函数
 		}
 		$dbtype = 'DB_'.$dbtype;
 		require_once(SYS_PATH.'database/drivers/'.$dbtype.'.php');		//引入相关数据库驱动文件
@@ -32,12 +32,14 @@ class DB{
 	public function join($table,$on='',$type='left'){
 		return self::$db->join($table,$on,$type);
 	}
-
 	//设置条件
 	public function where($param){
 		return self::$db->where($param);
 	}
-
+	//order by
+	public function by($param){
+		return self::$db->by($param);
+	}
 	//设置limit
 	public function limit($limit='',$offset=''){
 		return self::$db->limit($limit,$offset);
@@ -81,6 +83,10 @@ class DB{
 	//删除记录
 	public function del($table,$where=''){
 		return self::$db->del($table,$where);
+	}
+	//清空表
+	public function truncate($table){
+		return self::$db->truncate($table);
 	}
 	
 	//信任的驱动

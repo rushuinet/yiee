@@ -15,6 +15,7 @@ class DB_mysqli{
 	private $table = '';					//表名
 	private $join = '';						//连表
 	private $where = '';					//条件
+	private $by = '';						//排序
 	private $limit = '';					//limit
 	//查询结果
 	private $res = false;					//查询对象
@@ -37,7 +38,7 @@ class DB_mysqli{
 
 	//错误处理
 	public static function error($msg){
-		log_msg($msg,'mysqli');
+		log_msg($msg,__CLASS__);		//此处引用了公共函数
 	}
 	
 	/**
@@ -83,7 +84,7 @@ class DB_mysqli{
 
 		$table = strval($table);
 		if(empty($table)){
-			self::error('表名不正确.');
+			self::error('表名不正确！');
 		}
 		$this->table = $table;
 		return $this;
@@ -91,6 +92,9 @@ class DB_mysqli{
 
 	//join
 	public function join($table,$on='',$type='left'){
+
+		$this->del_query();
+
 		if(is_array($table)){
 			foreach ($table as $v){
 				$this->join .= ' '.strtoupper($v[2]) . ' JOIN `'.$v[0].'` ON '.$v[1];
@@ -116,6 +120,17 @@ class DB_mysqli{
 			}
 		}else{
 			$this->where .= $param;
+		}
+		return $this;
+	}
+
+	//条件
+	public function by($param){
+		$this->del_query();
+		if( empty($this->by) ){
+			$this->by .= $param;
+		}else{
+			$this->by .= ','.$param;
 		}
 		return $this;
 	}
@@ -155,7 +170,7 @@ class DB_mysqli{
 			$where = ' WHERE '.$this->where;
 		}
 
-		$sql = 'SELECT '.$fields.' FROM `'.$table.'` '.$this->join.$where.$this->limit;
+		$sql = 'SELECT '.$fields.' FROM `'.$table.'` '.$this->join.$where.' ORDER BY '.$this->by.$this->limit;
 		return $this->query($sql);
 	}
 
@@ -169,8 +184,6 @@ class DB_mysqli{
 		$this->del_sql();
 		return $this;
 	}
-
-
 
 	//删除查询对象
 	private function del_query(){
@@ -300,6 +313,11 @@ class DB_mysqli{
 		return mysqli_affected_rows($this->links);
 	}
 	
+	//清空表
+	public function truncate($table){
+		$this->query('TRUNCATE TABLE `'.$table.'`');
+		$this->del_query();
+	}
 	
 	//关闭链接
 	public function close(){
