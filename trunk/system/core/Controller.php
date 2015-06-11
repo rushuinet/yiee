@@ -5,5 +5,9 @@
 	 * @author	Rushui
 	 */
 	class Controller {
-		public $rs = 'rushui';
+
+		//超级对象
+		public function set_obj(){
+			
+		}
 	}
