@@ -12,7 +12,6 @@ define('SYS_PATH',dirname(__FILE__).'/');
 //APP目录
 define('APP_PATH',dirname($_SERVER['SCRIPT_FILENAME']).'/'.$app_dir.'/');
 
-
 class Yiee{
 	
 	private static $config;		//配置
