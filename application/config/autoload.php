@@ -5,27 +5,21 @@
  * @author	Rushui
  */
 
-
-//数据库链接
-$autoload['dblink'] = 'default';
-
-//包
-$autoload['packages'] = array();
-
-//类库
-$autoload['libraries'] = array();
-
-//适配器
-$autoload['drivers'] = array();
-
-//辅助函数
-$autoload['helper'] = array();
-
-//配置
-$autoload['config'] = array();
-
-//语言包
-$autoload['language'] = array();
-
-//model类
-$autoload['model'] = array();
+return array(
+	//数据库链接
+	'dblink'=>'default',
+	//包
+	'packages'=> array(),
+	//类库
+	'libraries'=> array(),
+	//适配器
+	'drivers'=> array(),
+	//辅助函数
+	'helper'=> array(),
+	//配置
+	'config'=> array(),
+	//语言包
+	'language'=> array(),
+	//model类
+	'model'=> array(),
+);
