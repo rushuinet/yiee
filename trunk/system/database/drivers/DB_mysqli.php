@@ -128,7 +128,7 @@ class DB_mysqli{
 	public function by($param){
 		$this->del_query();
 		if( empty($this->by) ){
-			$this->by .= $param;
+			$this->by = ' ORDER BY '.$param;
 		}else{
 			$this->by .= ','.$param;
 		}
@@ -170,7 +170,7 @@ class DB_mysqli{
 			$where = ' WHERE '.$this->where;
 		}
 
-		$sql = 'SELECT '.$fields.' FROM `'.$table.'` '.$this->join.$where.' ORDER BY '.$this->by.$this->limit;
+		$sql = 'SELECT '.$fields.' FROM `'.$table.'` '.$this->join.$where.$this->by.$this->limit;
 		return $this->query($sql);
 	}
 
