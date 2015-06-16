@@ -1,4 +1,4 @@
-<?php
+<?php defined('SYS_PATH') OR die('access error.');
 /**
  * APP配置
  * @E-mail	rushui@qq.com
