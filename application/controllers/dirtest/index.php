@@ -8,7 +8,10 @@
 	class index extends Controller{
 
 		//构造方法
-		public function __construct(){}
+		public function __construct(){
+			parent::__construct();
+			Yiee::$benchmark->mark('aaa');
+		}
 
 		public function index(){
 
@@ -19,7 +22,7 @@
 //			$arr = array('title'=>'小李323','ckey'=>'test144');
 //			$re = DB::del('main_keylib','id >118');
 			
-			var_dump($re,DB::last_query());
+			var_dump($re,$this->db->last_query());
 
 			$data = array(
 				'title'=>'标题',
@@ -38,11 +41,21 @@
 			echo '<br />';
 			echo $b;
 			echo '<br />';
-			echo $this->rs;
-			echo '<br />';
 			echo Yiee::$uri->complete;
 			echo '<br />';
 			var_dump($_GET);
 			VIEW('test',$data);
 		}
+		
+		//基准类测试
+		public function run_time($a){
+			//var_dump($this->benchmark);
+			echo $this->benchmark->run_time();
+			echo '<br />';
+			echo $a;
+			echo '<br />';
+			echo Yiee::$benchmark->run_time('aaa');
+		}
+		
+
 	}

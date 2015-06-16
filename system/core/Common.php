@@ -5,24 +5,12 @@
  * @author	Rushui
  */
 
-/**
- * 实例化控制器
- * param	$dir				类所在目录
- * param	$name				类名
- * param	$method				方法名
- * @E-mail	rushui@qq.com
- * @author	Rushui
- */
-function C($dir,$name, $method,$params=array()){
-	require_once(APP_PATH.'controllers/'.$dir.$name.'.php');
-	$obj = new $name();
-	//$obj->{$method}();
-	call_user_func_array(array($obj, $method), $params);
-}
+
 //日志信息
 function log_msg($msg,$type='err'){
 	die($type.' : '.$msg);
 }
+
 //实例化model
 function M($name){
 	$model_name = $name.'_model';
