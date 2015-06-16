@@ -1,4 +1,4 @@
-<?php
+<?php defined('SYS_PATH') OR die('access error.');
 /**
  * mysqli 数据库操作类(单例)
  * @E-mail	rushui@qq.com

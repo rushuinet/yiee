@@ -1,4 +1,4 @@
-<?php
+<?php defined('SYS_PATH') OR die('access error.');
 	/**
 	 * 默认控制器
 	 * @E-mail	rushui@qq.com
@@ -8,7 +8,9 @@
 	class index extends Controller{
 
 		//构造方法
-		public function __construct(){}
+		public function __construct(){
+			parent::__construct();
+		}
 
 		public function index(){
 			$query = trim($_SERVER['REQUEST_URI'],dirname($_SERVER['SCRIPT_NAME']).$_SERVER['SCRIPT_NAME']);	//将当前文件后的URI做为参数

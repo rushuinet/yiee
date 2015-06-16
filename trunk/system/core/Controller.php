@@ -1,4 +1,4 @@
-<?php
+<?php defined('SYS_PATH') OR die('access error.');
 	/**
 	 * 公共控制器
 	 * @E-mail	rushui@qq.com

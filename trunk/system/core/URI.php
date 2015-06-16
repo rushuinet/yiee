@@ -1,4 +1,4 @@
-<?php
+<?php defined('SYS_PATH') OR die('access error.');
 /**
  * URI类（单例）
  * @E-mail	rushui@qq.com
