@@ -8,7 +8,7 @@ class URI {
 	//静态变量保存全局实例
     private static $_instance = null;
 
-	private $complete = '';			//完整URI（framework/index.php/dir/c/m/add/new?id=5&s=yy）
+	private $complete = '';			//完整URI（framework/index.php/dir/c/m/add/new.html?id=5&s=yy）
 	private $uri_all = '';			//完整的URI参数段（dir/c/m/?id=5&s=yy）
 	private $uri_str = '';			//URI段字符串（dir/c/m）
 	private $uri_arr = array();		//URI段组成的数组( array(dir,c,m) )
