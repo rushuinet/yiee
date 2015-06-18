@@ -23,5 +23,12 @@ return array(
 	'default_controller'=>'index',
 	//默认方法
 	'default_method'=>'index',
+	//视图路径(为空调用APP_PATH/views)
+	'view_path'=>'',
+	//扩展核心类前缀
+	'class_prefix'=>'MY_',
+	//url后缀
+	'url_suffix'=>'.html',
+
 	
 );

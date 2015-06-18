@@ -9,15 +9,20 @@ class URI {
     private static $_instance = null;
 
 	private $complete = '';			//完整URI（framework/index.php/dir/c/m/add/new.html?id=5&s=yy）
-	private $uri_all = '';			//完整的URI参数段（dir/c/m/?id=5&s=yy）
+	private $uri_all = '';			//完整的URI参数段（dir/c/m/add/new.html?id=5&s=yy）
 	private $uri_str = '';			//URI段字符串（dir/c/m）
 	private $uri_arr = array();		//URI段组成的数组( array(dir,c,m) )
 	private $in_name = '';			//入口文件名称（index.php）
 	private $in_dir = '';			//入口文件所在目录（framework/）
-	private $c_dir = '';				//控制器所在目录（dir/）
+	private $c_dir = '';			//控制器所在目录（dir/）
 	private $c_name = '';			//控制器名称（c）
 	private $m_name = '';			//方法名( m )
 	private $m_arr = array();		//方法参数值( add,new )
+
+	private $url = '';				//完整url
+	private $base_url = '';			//根路径
+	private $web_url = '';			//项目路径
+	private $domain = '';			//域名
 	
 	//私有构造函数，防止外界实例化对象
 	private function __construct(){
@@ -33,7 +38,24 @@ class URI {
         }
         return self::$_instance;
     }
-
+	
+	//url函数
+	public function site_url($uri=''){
+		$suffix = Yiee::conf('url_suffix');
+		if ($suffix !== ''){
+			if (($offset = strpos($uri, '?')) !== FALSE){
+				$uri = substr($uri, 0, $offset).$suffix.substr($uri, $offset);
+			}else{
+				$uri .= $suffix;
+			}
+		}
+		//处理隐藏入口文件的URL
+		$in_name_str = '';
+		if( substr($this->complete,strlen($this->in_dir),strlen($this->in_name)) == $this->in_name ){
+			$in_name_str = $this->in_name.'/';
+		}
+		return $this->in_dir.$in_name_str.$uri;
+	}
 	
 	//初始化URI类
 	private function _init(){
@@ -45,6 +67,11 @@ class URI {
 		$this->uri_arr = $arr['uri_arr'];
 		$this->in_name = $arr['in_name'];
 		$this->in_dir = $arr['in_dir'];
+
+		$this->url = $arr['url'];
+		$this->domain = $arr['domain'];
+		$this->base_url = $arr['base_url'];
+		$this->web_url = $arr['web_url'];
 
 		$mc = $this->_get_cm($arr['uri_arr']);
 		$this->c_dir = $mc['c_dir'];
@@ -71,18 +98,25 @@ class URI {
 		
 		//完整URI
 		$data['complete'] = ltrim($_SERVER['REQUEST_URI'],'/');
-		//完整的URI参数段
-		$data['uri_all'] = trim($_SERVER['REQUEST_URI'],dirname($_SERVER['SCRIPT_NAME']).$_SERVER['SCRIPT_NAME']);
 		//入口文件名字
 		$data['in_name'] = basename($_SERVER['SCRIPT_NAME']);
 		//入口文件目录
 		$data['in_dir'] = trim(dirname($_SERVER['SCRIPT_NAME']),'/').'/';
+		//根据HTTP判断字符
+		$http_str = is_https() ? 'https://' : 'http://';
+		//完整URL
+		$data['url'] = $http_str.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'];
+		//域名
+		$data['domain'] = $_SERVER['SERVER_NAME'];
+		//根路径
+		$data['base_url'] = $http_str.$_SERVER['HTTP_HOST'].'/';
+		//项目路径
+		$data['web_url'] = $data['base_url'].$data['in_dir'];
 		
 
 		$uri = parse_url($_SERVER['REQUEST_URI']);
 		$query = isset($uri['query']) ? $uri['query'] : '';
 		$uri = isset($uri['path']) ? $uri['path'] : '';
-
 		if (isset($_SERVER['SCRIPT_NAME'][0])){
 			if (strpos($uri, $_SERVER['SCRIPT_NAME']) === 0){
 				$uri = (string) substr($uri, strlen($_SERVER['SCRIPT_NAME']));
@@ -90,6 +124,12 @@ class URI {
 				$uri = (string) substr($uri, strlen(dirname($_SERVER['SCRIPT_NAME'])));
 			}
 		}
+		
+		//去除url后缀(取配置url_suffix临时用.html)
+		$uri = $this->_set_uri_suffix($uri);
+
+		//完整的URI参数段
+		$data['uri_all'] = ltrim($uri,'/').'?'.$query;
 
 		if (trim($uri, '/') === '' && strncmp($query, '/', 1) === 0){
 			$query = explode('?', $query, 2);
@@ -148,6 +188,20 @@ class URI {
 
 		return $data;
 	}
+	
+	//处理URI后缀
+	private function _set_uri_suffix($uri){
+		$suffix = Yiee::conf('url_suffix');	//来自配置文件
+		if( (string) $suffix  !== ''){
+			$slen = strlen($suffix);
+			if (substr($uri, -$slen) === $suffix){
+				return substr($uri, 0, -$slen);
+			}
+		}else{
+			return $uri;
+		}
+	}
+
 
 	//重载(属性设置)
 	public function __set($name,$value){
