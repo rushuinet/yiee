@@ -7,8 +7,6 @@
 
 class DB_mysqli{
 	
-    private static $_instance = null;		//静态变量保存全局实例
-
 	private $links = false;					//数据库链接标识
 	//sql对象
 	private $fields = '';					//字段
@@ -22,19 +20,6 @@ class DB_mysqli{
 	private $num_rows;						//行数
 	private $last_query; 					//最后查询语句
 
-
-	//私有构造函数，防止外界实例化对象
-	private function __construct(){}
-	//私有克隆函数，防止外办克隆对象
-    private function __clone() {}
-
-	//静态方法，单例统一访问入口
-    static public function getInstance() {
-        if (is_null ( self::$_instance ) || isset ( self::$_instance )) {
-            self::$_instance = new self ();
-        }
-        return self::$_instance;
-    }
 
 	//错误处理
 	public static function error($msg){

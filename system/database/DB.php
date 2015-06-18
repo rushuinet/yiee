@@ -14,7 +14,7 @@ class DB{
 		}
 		$dbtype = 'DB_'.$dbtype;
 		require_once(SYS_PATH.'database/drivers/'.$dbtype.'.php');		//引入相关数据库驱动文件
-		eval('self::$db = '.$dbtype.'::getInstance();');
+		self::$db = new $dbtype();
 		self::$db->connect($config);
 	}
 
