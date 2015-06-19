@@ -22,7 +22,7 @@ class DB_mysqli{
 
 
 	//错误处理
-	public static function error($msg){
+	public function error($msg){
 		log_msg($msg,__CLASS__);		//此处引用了公共函数
 	}
 	
@@ -33,15 +33,15 @@ class DB_mysqli{
 	 * @E-mail	rushui@qq.com
 	 * @author	Rushui
 	 */
-	public function connect($config,$old_link=''){
-		if($old_link){
-			$this->links = $old_link;
+	public function connect($config){
+		if( is_object($config) ){
+			$this->links = $config;
 		}else{
 			extract($config);
 			$db_port = $db_port ? $db_port : '3306';
 			$link = mysqli_connect($hostname,$username,$password,$database,$db_port);
 			if(!$link){
-				self::error( mysqli_error($link) );
+				$this->error( mysqli_error($link) );
 			}
 			//设置字符集
 			mysqli_set_charset($link,$char_set);
@@ -69,7 +69,7 @@ class DB_mysqli{
 
 		$table = strval($table);
 		if(empty($table)){
-			self::error('表名不正确！');
+			$this->error('表名不正确！');
 		}
 		$this->table = $table;
 		return $this;
@@ -163,7 +163,7 @@ class DB_mysqli{
 	public function query($sql=''){
 		$this->res = mysqli_query($this->links,$sql);
 		if(!$this->res){
-			self::error( $sql . '<br />' . mysqli_error($this->links) );
+			$this->error( $sql . '<br />' . mysqli_error($this->links) );
 		}
 		$this->last_query = $sql;
 		$this->del_sql();
@@ -177,9 +177,11 @@ class DB_mysqli{
 
 	//删除sql对象
 	private function del_sql(){
-		$this->table = '';
 		$this->fields = '';
+		$this->table = '';
+		$this->join = '';
 		$this->where = '';
+		$this->by = '';
 		$this->limit = '';
 	}
 
@@ -226,7 +228,7 @@ class DB_mysqli{
 		if( isset($data[0]) && is_array($data[0])){
 			$key = ''; $val = ''; $keys = ''; $vals = ''; $str = '';
 			foreach ($data as $dv ){
-				if(!is_array($dv)){self::error( '数据格式不正确.' );}	//不是正确数组返回错误
+				if(!is_array($dv)){$this->error( '数据格式不正确.' );}	//不是正确数组返回错误
 				foreach ($dv as $k=>$v ){
 					$v = mysqli_real_escape_string($this->links,$v);
 					$key .= '`'.$k.'`,';
