@@ -101,7 +101,8 @@ class URI {
 		//入口文件名字
 		$data['in_name'] = basename($_SERVER['SCRIPT_NAME']);
 		//入口文件目录
-		$data['in_dir'] = trim(dirname($_SERVER['SCRIPT_NAME']),'/').'/';
+		$in_dir_name = trim(dirname($_SERVER['SCRIPT_NAME']),'\/');
+		$data['in_dir'] = $in_dir_name ? $in_dir_name .'/' : '';
 		//根据HTTP判断字符
 		$http_str = is_https() ? 'https://' : 'http://';
 		//完整URL
@@ -124,7 +125,7 @@ class URI {
 				$uri = (string) substr($uri, strlen(dirname($_SERVER['SCRIPT_NAME'])));
 			}
 		}
-		
+
 		//去除url后缀(取配置url_suffix临时用.html)
 		$uri = $this->_set_uri_suffix($uri);
 
@@ -164,10 +165,10 @@ class URI {
 	private function _get_cm($uri_arr){
 		$data = array('c_dir' => '','c_name' => '','m_name' => '','m_arr' => array());
 		$c_dir = '';
+		$m_arr = array();
 		$i = 0;
 		$a = 0;
 		foreach ($uri_arr as $k=>$v){
-
 			if( file_exists(APP_PATH.'controllers/'.$v.'.php') && $i === 0 ){
 				$i = $k+1;
 				$data['c_name'] = $v;
@@ -196,6 +197,8 @@ class URI {
 			$slen = strlen($suffix);
 			if (substr($uri, -$slen) === $suffix){
 				return substr($uri, 0, -$slen);
+			}else{
+				return $uri;
 			}
 		}else{
 			return $uri;
