@@ -58,9 +58,10 @@ class Yiee{
 		$link = $autoload['dblink'];
 		if( !empty($link) ){
 			$db = self::$config['database'];
-			DB::init($db[$link]['dbdriver'],$db[$link]);
+			self::$objs['db'] = DB::init($db[$link]['dbdriver'],$db[$link]);
+			self::$objs['db']->connect($db[$link]);	//链接数据库
 		}
-		self::$objs['db'] = DB::$db;
+		//self::$objs['db'] = DB::$db;
 	}
 	
 	//获取配置

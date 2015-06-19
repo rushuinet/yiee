@@ -5,24 +5,25 @@
 	 * @author	Rushui
 	 */
 
-	class index extends Controller{
+	class index extends MY_Controller{
 
 		//构造方法
 		public function __construct(){
 			parent::__construct();
-			Yiee::$objs['benchmark']->mark('aaa');
+			$this->benchmark->mark('aaa');
 		}
 
 		public function index(){
 
-			$re = DB::table('main_keylib')->where(array('status'=>'1'))->fields(array('id','title'))->limit(2,3)->get();
+			$re = $this->db->table('main_keylib')->where(array('status'=>'1'))->fields(array('id','title'))->limit(2,3)->get();
 			$row = $re->result();
 			$sql = $re->num_rows();
 
 //			$arr = array('title'=>'小李323','ckey'=>'test144');
-//			$re = DB::del('main_keylib','id >118');
+			$re = $this->db->del('main_keylib','id >79');
+			echo $this->rs();
 			
-			var_dump($re,$this->db->last_query());
+			var_dump($row,$this->db->last_query());
 
 			$data = array(
 				'title'=>'标题',

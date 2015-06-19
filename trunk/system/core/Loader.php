@@ -70,7 +70,7 @@
 			}else{
 				require_once(SYS_PATH.$path);
 			}
-			$ext_path = APP_PATH.Yiee::conf('class_prefix').$path;
+			$ext_path = APP_PATH.'core/'.Yiee::conf('class_prefix').$v.'.php';;
 			//加载扩展核心类
 			if( file_exists($ext_path) ){
 				require_once($ext_path);
