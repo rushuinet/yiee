@@ -5,17 +5,20 @@
 	 * @author	Rushui
 	 */
 	class Controller {
+		//对象实例
+		private static $instance;
 
 		//构造方法
 		public function __construct(){
-			$this->_set_obj();
-		}
-
-		//初始化对象
-		public function _set_obj(){
+			self::$instance =& $this;
 			//初始化对象
 			foreach (Yiee::$objs as $k=>$v ){
 				$this->$k = Yiee::$objs[$k];
 			}
+		}
+
+		//获取对象实例
+		public static function &get_instance(){
+			return self::$instance;
 		}
 	}

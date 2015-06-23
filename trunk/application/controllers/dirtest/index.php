@@ -11,6 +11,7 @@
 		public function __construct(){
 			parent::__construct();
 			$this->benchmark->mark('aaa');
+			//$this->load->database();
 		}
 
 		public function index(){
@@ -24,6 +25,17 @@
 			echo $this->rs();
 			
 			var_dump($row,$this->db->last_query());
+			echo '<br />';
+			
+			//** //配置测试
+			//$this->load->config('autoload');
+			var_dump(Yiee::$config);
+			// **/
+			/** //语言测试
+			$this->load->lang('sys/add');
+			$this->load->lang('config');
+			var_dump(Yiee::$lang);
+			// **/
 
 			$data = array(
 				'title'=>'标题',

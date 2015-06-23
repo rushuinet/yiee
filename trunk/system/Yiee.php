@@ -12,15 +12,36 @@ define('SYS_PATH',dirname(__FILE__).'/');
 //APP目录
 define('APP_PATH',dirname($_SERVER['SCRIPT_FILENAME']).'/'.$app_dir.'/');
 
+//环境配置
+switch (ENVIRONMENT) {
+	//开发
+	case 'development':				
+		error_reporting(-1);
+		ini_set('display_errors', 1);
+	break;
+	//测试与生产
+	case 'testing':
+	case 'production':
+		ini_set('display_errors', 0);
+		if (version_compare(PHP_VERSION, '5.3', '>=')) {
+			error_reporting(E_ALL & ~E_NOTICE & ~E_DEPRECATED & ~E_STRICT & ~E_USER_NOTICE & ~E_USER_DEPRECATED);
+		} else {
+			error_reporting(E_ALL & ~E_NOTICE & ~E_STRICT & ~E_USER_NOTICE);
+		}
+	break;
+	
+	default:
+		die( '必需定义环境！' );
+}
+
 class Yiee{
 	
-	private static $config;				//配置
-	public static $objs=array();		//保存对象实例
+	public static $config=array();			//配置
+	public static $objs=array();			//保存对象实例
+	public static $lang=array();			//语言
 
 	//准备框架文件
 	private static function start(){
-		//配置文件
-		self::$config = include(APP_PATH.'config/config.php');
 		//加载类
 		require_once(SYS_PATH.'core/Loader.php');
 		$obj = new Loader();
@@ -51,25 +72,13 @@ class Yiee{
 		call_user_func_array(array($obj, $uri->m_name), $uri->m_arr );
 	}
 	
-	//初始化数据库链接
-	private static function _init_db(){
-		$autoload = include(APP_PATH.'config/autoload.php');
-		require_once(SYS_PATH.'database/DB.php');
-		$link = $autoload['dblink'];
-		if( !empty($link) ){
-			$db = self::$config['database'];
-			self::$objs['db'] = DB::init($db[$link]['dbdriver'],$db[$link]);
-			self::$objs['db']->connect($db[$link]);	//链接数据库
-		}
-		//self::$objs['db'] = DB::$db;
-	}
 	
 	//获取配置
 	public static function conf($key=''){
-		if(empty($key)){
-			return self::$config;
-		}else{
+		if(isset(self::$config[$key])){
 			return self::$config[$key];
+		}else{
+			return null;
 		}
 	}
 	
@@ -78,7 +87,6 @@ class Yiee{
 		self::start();
 		self::_init_benchmark();
 		self::_init_uri();
-		self::_init_db();
 		self::_init_controller();
 	}
 
