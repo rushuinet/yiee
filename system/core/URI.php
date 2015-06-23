@@ -38,25 +38,22 @@ class URI {
         }
         return self::$_instance;
     }
-	
-	//url函数
-	public function site_url($uri=''){
-		$suffix = Yiee::conf('url_suffix');
-		if ($suffix !== ''){
-			if (($offset = strpos($uri, '?')) !== FALSE){
-				$uri = substr($uri, 0, $offset).$suffix.substr($uri, $offset);
-			}else{
-				$uri .= $suffix;
-			}
-		}
-		//处理隐藏入口文件的URL
-		$in_name_str = '';
-		if( substr($this->complete,strlen($this->in_dir),strlen($this->in_name)) == $this->in_name ){
-			$in_name_str = $this->in_name.'/';
-		}
-		return $this->in_dir.$in_name_str.$uri;
+
+	//base_url函数
+	public function base_url($uri=''){
+		return '/'.$uri;
 	}
-	
+	//web_url函数
+	public function web_url($uri=''){
+		return '/'.$this->in_dir.$uri;
+	}
+	//site_url函数
+	public function site_url($uri=''){
+		//增加URI后缀
+		$uri = $this->_add_uri_suffix($uri);
+		return $this->web_url($this->_in_name_str().$uri);
+	}
+
 	//初始化URI类
 	private function _init(){
 
@@ -127,7 +124,7 @@ class URI {
 		}
 
 		//去除url后缀(取配置url_suffix临时用.html)
-		$uri = $this->_set_uri_suffix($uri);
+		$uri = $this->_del_uri_suffix($uri);
 
 		//完整的URI参数段
 		$data['uri_all'] = ltrim($uri,'/').'?'.$query;
@@ -189,9 +186,19 @@ class URI {
 
 		return $data;
 	}
+
+	//处理隐藏入口文件的URL
+	private function _in_name_str(){
+		//处理隐藏入口文件的URL
+		$in_name_str = '';
+		if( substr($this->complete,strlen($this->in_dir),strlen($this->in_name)) == $this->in_name ){
+			$in_name_str = $this->in_name.'/';
+		}
+		return $in_name_str;
+	}
 	
-	//处理URI后缀
-	private function _set_uri_suffix($uri){
+	//去除URI后缀
+	private function _del_uri_suffix($uri){
 		$suffix = Yiee::conf('url_suffix');	//来自配置文件
 		if( (string) $suffix  !== ''){
 			$slen = strlen($suffix);
@@ -203,6 +210,18 @@ class URI {
 		}else{
 			return $uri;
 		}
+	}
+	//增加URI后缀
+	private function _add_uri_suffix($uri){
+		$suffix = Yiee::conf('url_suffix');	//来自配置文件
+		if (!empty($uri) && substr($uri,-1) != '/' && $suffix !== ''){
+			if (($offset = strpos($uri, '?')) !== FALSE){
+				$uri = substr($uri, 0, $offset).$suffix.substr($uri, $offset);
+			}else{
+				$uri .= $suffix;
+			}
+		}
+		return $uri;
 	}
 
 

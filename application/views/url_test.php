@@ -5,6 +5,6 @@
 	<title><?=$title?></title>
 </head>
 <body>
-	<a href="<?=$uri->site_url('adfaf?aa=s&bb=555');?>"><?echo $body?></a>
+	<a href="<?=$uri->site_url('dirtest/index/url/adfaf?aa=s&bb=555');?>"><?echo $body?></a>
 </body>
 </html>

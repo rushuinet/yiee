@@ -29,7 +29,7 @@
 			
 			//** //配置测试
 			//$this->load->config('autoload');
-			var_dump(Yiee::$config);
+			//var_dump(Yiee::$config);
 			// **/
 			/** //语言测试
 			$this->load->lang('sys/add');
@@ -41,7 +41,7 @@
 				'title'=>'标题',
 				'body'=>'这是一个测试页'
 			);
-			VIEW('test',$data);
+			$this->load->view('test',$data);
 		}
 
 		public function test($a='',$b=''){
@@ -57,7 +57,7 @@
 			echo $this->uri->complete;
 			echo '<br />';
 			var_dump($_GET);
-			VIEW('test',$data);
+			$this->load->view('test',$data);
 		}
 		
 		//基准类测试
@@ -99,24 +99,34 @@
 			echo '<br />';
 			'm_arr: '.var_dump($this->uri->m_arr);
 			echo '<br />';
-			echo $this->uri->site_url('adf/sdfsdf?a=ee&b=66');
+			echo 'base_url():'.$this->uri->base_url();
+			echo '<br />';
+			echo 'web_url():'.$this->uri->web_url();
+			echo '<br />';
+			echo 'site_url():'.$this->uri->site_url();
+			echo '<br />';
+			echo 'site_url("adf/sdfsdf?a=ee&b=66"):'.$this->uri->site_url('adf/sdfsdf?a=ee&b=66');
 			echo '<br />';
 			echo 'SERVER_NAME: '.$_SERVER['SERVER_NAME'];
 
 		}
-
+		//$this->uri->site_url()测试
 		public function url_test(){
+			echo $this->uri->site_url('sdfdsf/substr/');
+			echo '<br />';
+			echo $this->uri->site_url('sdfdsf/substr/sadsa');
+			echo '<br />';
+			if(isset($_GET['aa'])){
+				$body = $_GET['aa'];
+			}else{
+				$body = 'url_test';
+			}
 			$data = array(
 				'title'=>'url_test',
-				'body'=>'url_test',
+				'body'=> $body,
 				'uri'=>$this->uri	
 			);
 			$this->load->view('url_test',$data);
-		}
-
-		public function loader(){
-			//$load = Loader::getInstance();
-			Loader::inc('aaa');
 		}
 
 	}
