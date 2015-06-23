@@ -91,6 +91,13 @@ function VIEW($name,$data=array(),$way=false){
 	
 }
 
+//返回文件名: dir/name 返回name
+//用于加载类时传入带目录的类
+function get_classnmae($name){
+	$arr = array_filter( explode('/',$name) );
+	return $arr[0];
+}
+
 //判断是否为https
 function is_https(){
 	if ( ! empty($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) !== 'off'){

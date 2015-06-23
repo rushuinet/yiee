@@ -6,18 +6,15 @@
  */
  class Loader{
 
-	//保存对象实例
-	public static $objs = array();
-	//保存的配置数据
-	protected static $config = array();
 	//程序与系统路径
-	protected static $paths = array(APP_PATH,SYS_PATH);
+	protected $paths = array(APP_PATH,SYS_PATH);
 	
 	//构造方法
 	public function __construct(){
 		$this->_init();			//初始化类
 	}
-
+	
+	//加载视图
 	public function view($name,$data=array(),$way=false){
 		$view_path = Yiee::conf('view_path');
 		if( empty($view_path) ){
@@ -35,6 +32,47 @@
 		}else{
 			require_once($path);
 		}
+	}
+
+	/**
+	 * 加载类库
+	 * param	$name 类名称 （为数组时为批量加载，不支持传配置）
+	 * param	$config 配置文件
+	 * param	$alias 对象别名
+	 * @E-mail	rushui@qq.com
+	 * @author	Rushui
+	 */
+	public function library($name,$config=array(),$alias=''){
+		if( is_array($name) ){
+			foreach ($name as $v ){
+				require_once(APP_PATH.'libraries/'.$v.'.php');
+				$this->_ins_class($v);
+			}
+		}else{
+			require_once(APP_PATH.'libraries/'.$name.'.php');
+			$this->_ins_class($name,$config,$alias);
+		}
+		
+	}
+
+	/**
+	 * 加载model
+	 * param	$name 模型名称（为数组时为批量加载，不支持定义别名）
+	 * param	$alias 对象别名
+	 * @E-mail	rushui@qq.com
+	 * @author	Rushui
+	 */
+	public function model($name,$alias=''){
+		if( is_array($name) ){
+			foreach ($name as $v){
+				require_once(APP_PATH.'models/'.$v.'.php');
+				$this->_ins_class($v);
+			}
+		}else{
+			require_once(APP_PATH.'models/'.$name.'.php');
+			$this->_ins_class($name);
+		}
+		
 	}
 
 	//初始化
@@ -83,26 +121,18 @@
 	protected function _init_auto(){
 		
 	}
-
-
-
-	/**
-	 * 加载不实例化的类
-	 * param	$namd 类名
-	 * param	$sys 系统名APP_PATH，SYS_PATH默认为SYS_PATH
-	 * param	$dir 类所在目录 默认libraries
-	 * @E-mail	rushui@qq.com
-	 * @author	Rushui
-	 */
-	public static function inc($name,$dir='libraries/'){
-		$path = $dir.$name.'.php';
-		foreach (self::$paths as $v){
-			if( file_exists($v.$path) ){
-				require_once($v.$path);
-				return;
-			}
+	
+	//实例化类并加入到对象实例中：Yiee::$objs['objname']
+	private function _ins_class($name,$config=array(),$alias=''){
+		$class_name = get_classnmae($name);
+		$obj = new $class_name($config);
+		if($alias){
+			Yiee::$objs[$alias] = $obj;
+		}else{
+			Yiee::$objs[$class_name] = $obj;
 		}
-
 	}
+
+
 
  }
