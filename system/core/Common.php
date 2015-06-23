@@ -19,62 +19,6 @@ function M($name){
 	return $obj;
 }
 
-/**
- * 类加载
- * param	$class 类名
- * param	$directory 所在目录
- * param	$param 类的别名
- * @E-mail	rushui@qq.com
- * @author	Rushui
- */
-function &load_class($class, $directory = 'libraries', $param = NULL){
-	static $_classes = array();
-	//如果已经存在刚返回该对象
-	if (isset($_classes[$class])){
-		return $_classes[$class];
-	}
-
-	//与系统核心类名称一样可重写系统核心类
-	foreach (array(APP_PATH, SYS_PATH) as $path) {
-		if (file_exists($path.$directory.'/'.$class.'.php')){
-			if (class_exists($class, FALSE) === FALSE){
-				require_once($path.$directory.'/'.$class.'.php');
-			}
-		}
-	}
-	$name = FALSE;
-	// 加载APP扩展核心类
-	if (file_exists(APP_PATH.$directory.'/'.'MY_'.$class.'.php')){
-		$name = 'MY_'.$class;
-		if (class_exists($name, FALSE) === FALSE){
-			require_once(APP_PATH.$directory.'/'.$name.'.php');
-		}
-	}
-
-	// 没能找到类
-	if ($name === FALSE){
-		//set_status_header(503);
-		echo 'Unable to locate the specified class: '.$class.'.php';
-		exit(5); // EXIT_UNK_CLASS
-	}
-
-	// 将类名称加载到数组中
-	is_loaded($class);
-
-	$_classes[$class] = isset($param) ? new $name($param) : new $name();
-	return $_classes[$class];
-}
-
-
-//返回已经加载类
-function &is_loaded($class = ''){
-	static $_is_loaded = array();
-	if ($class !== ''){
-		$_is_loaded[strtolower($class)] = $class;
-	}
-	return $_is_loaded;
-}
-
 //加载视图
 function VIEW($name,$data=array(),$way=false){
 	$path = APP_PATH.'views/'.$name.'.php';
@@ -91,11 +35,33 @@ function VIEW($name,$data=array(),$way=false){
 	
 }
 
+/**
+ * 引用超级对象
+ * @E-mail	rushui@qq.com
+ * @author	Rushui
+ */
+function &get_instance(){
+	return Controller::get_instance();
+}
+
+
 //返回文件名: dir/name 返回name
-//用于加载类时传入带目录的类
-function get_classnmae($name){
+//用于返回不带扩展名文件的名称
+function get_filenmae($name){
 	$arr = array_filter( explode('/',$name) );
 	return $arr[0];
+}
+
+/**
+ * 转换字符串： dir/name 返回dir_name
+ * param	$name 要转换的字符
+ * param	$a 要转换的字符
+ * param	$b 转换成为的字符
+ * @E-mail	rushui@qq.com
+ * @author	Rushui
+ */
+function conver_str($str,$a='_',$b='/'){
+	return implode($a, explode($b,$str) );
 }
 
 //判断是否为https
@@ -107,7 +73,6 @@ function is_https(){
 	} elseif ( ! empty($_SERVER['HTTP_FRONT_END_HTTPS']) && strtolower($_SERVER['HTTP_FRONT_END_HTTPS']) !== 'off') {
 		return TRUE;
 	}
-
 	return FALSE;
 }
 
@@ -125,7 +90,8 @@ function is_set($value,$str='',$str1=''){
 	}else{
 		return $str1==''?$value:$str1;
 	}
-} 
+}
+
 //转义字符
 function daddslashes($str){
 	return (!get_magic_quotes_gpc())?addslashes($str):$str;
