@@ -37,26 +37,26 @@
 		}
 
 		public function url(){
-			echo 'complete: '.Yiee::$uri->complete;
+			echo 'complete: '.$this->uri->complete;
 			echo '<br />';
-			echo 'url: '.Yiee::$uri->url;
+			echo 'url: '.$this->uri->url;
 			echo '<br />';
-			echo 'uri_all: '.Yiee::$uri->uri_all;
+			echo 'uri_all: '.$this->uri->uri_all;
 			echo '<br />';
-			echo 'uri_str: '.Yiee::$uri->uri_str;
+			echo 'uri_str: '.$this->uri->uri_str;
 			echo '<br />';
-			echo 'in_name: '.Yiee::$uri->in_name;
+			echo 'in_name: '.$this->uri->in_name;
 			echo '<br />';
-			echo 'in_dir: '.Yiee::$uri->in_dir;
+			echo 'in_dir: '.$this->uri->in_dir;
 			echo '<br />';
-			echo 'c_dir: '.Yiee::$uri->c_dir;
+			echo 'c_dir: '.$this->uri->c_dir;
 			echo '<br />';
-			echo 'c_name: '.Yiee::$uri->c_name;
+			echo 'c_name: '.$this->uri->c_name;
 			echo '<br />';
-			echo 'm_name: '.Yiee::$uri->m_name;
+			echo 'm_name: '.$this->uri->m_name;
 			echo '<br />';
-			'uri_arr: '.var_dump(Yiee::$uri->uri_arr);
+			'uri_arr: '.var_dump($this->uri->uri_arr);
 			echo '<br />';
-			'm_arr: '.var_dump(Yiee::$uri->m_arr);
+			'm_arr: '.var_dump($this->uri->m_arr);
 		}
 	}
