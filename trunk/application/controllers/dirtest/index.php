@@ -22,7 +22,7 @@
 
 //			$arr = array('title'=>'小李323','ckey'=>'test144');
 			$re = $this->db->del('main_keylib','id >79');
-			echo $this->rs();
+			echo $this->rs();		//MY_Controller扩展控制器中的方法
 			
 			var_dump($row,$this->db->last_query());
 			echo '<br />';
