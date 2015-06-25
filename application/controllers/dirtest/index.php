@@ -15,33 +15,49 @@
 		}
 
 		public function index(){
-
+			//echo $this->rs();		//MY_Controller扩展控制器中的方法
+			//** //数据库操作测试
 			$re = $this->db->table('main_keylib')->where(array('status'=>'1'))->fields(array('id','title'))->limit(2,3)->get();
 			$row = $re->result();
 			$sql = $re->num_rows();
 
 //			$arr = array('title'=>'小李323','ckey'=>'test144');
 			$re = $this->db->del('main_keylib','id >79');
-			echo $this->rs();		//MY_Controller扩展控制器中的方法
 			
 			var_dump($row,$this->db->last_query());
 			echo '<br />';
-			
-			//** //配置测试
-			//$this->load->config('autoload');
-			//var_dump(Yiee::$config);
+			// **/
+			/** //配置测试
+			$this->load->config('autoload');
+			var_dump($this->config->item('autoload'));
+			$this->config->set_item('autoload','adsfadsf');
+			var_dump($this->config->item('autoload'));
 			// **/
 			/** //语言测试
-			$this->load->lang('sys/add');
+			//$this->load->lang('sys/add');
 			$this->load->lang('config');
 			var_dump(Yiee::$lang);
+			var_dump($this->lang->line('sys_add'));
 			// **/
-
+			/** //加载类库
+			$this->load->library('cc/bbb');
+			$this->bbb->dss();
+			$this->load->library('aaa');
+			$this->aaa->dss();
+			// **/
+			/** //helper测试(与系统同名，优先使用APP下文件)
+			$this->load->helper('sys');
+			fugaitest();
+			$this->load->helper('app');
+			apptest();
+			// **/
+			//** //加载视图测试
 			$data = array(
 				'title'=>'标题',
 				'body'=>'这是一个测试页'
 			);
 			$this->load->view('test',$data);
+			// **/
 		}
 
 		public function test($a='',$b=''){
@@ -128,5 +144,16 @@
 			);
 			$this->load->view('url_test',$data);
 		}
-
+		
+		//输出配置信息
+		public function echo_arr(){
+			ob_start ();
+			echo "<?php \r\n";
+			echo 'return ';
+			var_export(Yiee::$config);
+			echo ';';
+			$data = ob_get_contents();
+			ob_end_clean ();
+			file_put_contents('./tmp/text.php',$data);
+		}
 	}

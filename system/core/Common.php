@@ -48,8 +48,8 @@ function &get_instance(){
 //返回文件名: dir/name 返回name
 //用于返回不带扩展名文件的名称
 function get_filenmae($name){
-	$arr = array_filter( explode('/',$name) );
-	return $arr[0];
+	$arr = explode('/',$name);
+	return end($arr);
 }
 
 /**
