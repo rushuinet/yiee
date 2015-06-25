@@ -4,8 +4,8 @@
  * @E-mail	rushui@qq.com
  * @author	Rushui
  */
-class aaa{
+class bbb{
 	public function dss(){
-		echo  '测试类库<br />';
+		echo  '测试覆盖系统类库<br />';
 	}
 }

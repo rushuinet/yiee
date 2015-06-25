@@ -4,7 +4,6 @@
  * @E-mail	rushui@qq.com
  * @author	Rushui
  */
-
 return array(
 	//数据库链接
 	'database'=>'default',

@@ -6,8 +6,8 @@
  */
  class Loader{
 
-	//程序与系统路径
-	protected $paths = array(APP_PATH,SYS_PATH);
+	//系统加载对象实例
+	public $loadobj = array();
 	
 	//构造方法
 	public function __construct(){
@@ -61,10 +61,11 @@
 			return false;
 		}
 		$view_path = Yiee::conf('view_path');
+		$view_suffix = Yiee::conf('view_suffix') ? Yiee::conf('view_suffix') : '.php';
 		if( empty($view_path) ){
-			$path = APP_PATH.'views/'.$name.'.php';
+			$path = APP_PATH.'views/'.$name.$view_suffix;
 		}else{
-			$path = $view_path.'/'.$name.'.php';
+			$path = IN_PATH.$view_path.'/'.$name.$view_suffix;
 		}
 		extract($data);
 		if($way===true){
@@ -96,7 +97,7 @@
 				$this->_ins_class($v);
 			}
 		}else{
-			$this->_inc_file('libraries/'.$v.'.php');
+			$this->_inc_file('libraries/'.$name.'.php');
 			$this->_ins_class($name,$config,$alias);
 		}
 		
@@ -222,7 +223,7 @@
 		}
 
 		//系统核心
-		$this->_inc_core(array('Common','Benchmark','URI'));
+		$this->_inc_core(array('Config','Lang','Common','Benchmark','URI'));
 
 		//数据库操作类
 		require_once(SYS_PATH.'database/DB.php');

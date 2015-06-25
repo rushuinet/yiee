@@ -10,7 +10,9 @@ return array(
 	//默认方法
 	'default_method'=>'index',
 	//视图路径(为空调用APP_PATH/views)
-	'view_path'=>'',
+	'view_path'=>'tpl',
+	//view后缀(为空则为.php)
+	'view_suffix'=>'.html',
 	//扩展核心类前缀
 	'class_prefix'=>'MY_',
 	//url后缀

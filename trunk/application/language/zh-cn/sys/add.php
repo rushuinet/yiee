@@ -1,4 +1,4 @@
 <?php
 return array(
-	'title'=>'语言测试'
+	'title'=>'二级目录语言测试'
 );
