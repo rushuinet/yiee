@@ -5,14 +5,16 @@
  * @author	Rushui
  */
 
+//系统运行开始时间
+define('SYS_START', microtime(TRUE));
 //版本号
 define('YIEE_VERSION', '1.0.1');
 //系统目录
 define('SYS_PATH',dirname(__FILE__).'/');
 //APP目录
-define('APP_PATH',dirname($_SERVER['SCRIPT_FILENAME']).'/'.$app_dir.'/');
+define('APP_PATH',str_replace(array('\\','/'),DIRECTORY_SEPARATOR,dirname($_SERVER['SCRIPT_FILENAME']).'/'.$app_dir.'/'));
 //入口文件目录
-define('IN_PATH',dirname($_SERVER['SCRIPT_FILENAME']).'/');
+define('IN_PATH',str_replace(array('\\','/'),DIRECTORY_SEPARATOR,dirname($_SERVER['SCRIPT_FILENAME']).'/'));
 
 //环境配置
 switch (ENVIRONMENT) {

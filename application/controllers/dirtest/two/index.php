@@ -146,7 +146,7 @@
 				'body'=> $body,
 				'uri'=>$this->uri	
 			);
-			$this->load->view('test',$data);
+			$this->load->view('url_test',$data);
 		}
 		
 		//输出配置信息

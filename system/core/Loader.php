@@ -65,17 +65,21 @@
 		if( empty($view_path) ){
 			$path = APP_PATH.'views/'.$name.$view_suffix;
 		}else{
-			$path = IN_PATH.$view_path.'/'.$name.$view_suffix;
+			$path = IN_PATH.$view_path.'\\'.$name.$view_suffix;
 		}
+		echo IN_PATH;
+		echo '<br />';
+		echo $path;
+		echo '<br />';
 		extract($data);
 		if($way===true){
 			ob_start ();
-			require_once($path);
+			include($path);
 			$data = ob_get_contents();
 			ob_end_clean ();
 			return $data;
 		}else{
-			require_once($path);
+			include($path);
 		}
 	}
 
@@ -307,7 +311,7 @@
 		}
 
 		if( class_exists('Controller') ){
-			$obj = &Controller::get_instance();
+			$obj = Controller::get_instance();
 			$obj->$name = $obj_name;
 		}else{
 			Yiee::$objs[$name] = $obj_name;

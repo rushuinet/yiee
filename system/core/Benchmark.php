@@ -9,6 +9,10 @@
 		//标记点数组
 		public $marker = array();
 
+		public function __construct(){
+			$this->marker['sys_start'] = SYS_START;
+		}
+
 		//添加一个标记点
 		public function mark($name){
 			$this->marker[$name] = microtime(TRUE);
