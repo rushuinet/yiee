@@ -56,60 +56,37 @@ class URI {
 
 	//初始化URI类
 	private function _init(){
-
-		$arr = $this->_get_uri();	//取URI段
-		$this->complete = $arr['complete'];
-		$this->uri_all = $arr['uri_all'];
-		$this->uri_str = $arr['uri_str'];
-		$this->uri_arr = $arr['uri_arr'];
-		$this->in_name = $arr['in_name'];
-		$this->in_dir = $arr['in_dir'];
-
-		$this->url = $arr['url'];
-		$this->domain = $arr['domain'];
-		$this->base_url = $arr['base_url'];
-		$this->web_url = $arr['web_url'];
-
-		$mc = $this->_get_cm($arr['uri_arr']);
-		$this->c_dir = $mc['c_dir'];
-		$this->c_name = $mc['c_name'];
-		$this->m_name = $mc['m_name'];
-		$this->m_arr = $mc['m_arr'];
+		//取URI段
+		$arr = $this->_get_uri();	
+		//控制器目录/控制器/方法/方法参数
+		$mc = $this->_get_cm();
 	}
 
 
 	//处理URI
 	private function _get_uri(){
-		//准备空数据
-		$data = array(
-			'complete'=>'',
-			'uri_all'=>'',
-			'uri_str'=>'',
-			'uri_arr'=>array(),
-			'in_name'=>'',
-			'in_dir'=>''
-		);
+
 		if ( ! isset($_SERVER['REQUEST_URI'], $_SERVER['SCRIPT_NAME']) ){
-			return $data;
+			return ;
 		}
 		
 		//完整URI
-		$data['complete'] = ltrim($_SERVER['REQUEST_URI'],'/');
+		$this->complete = ltrim($_SERVER['REQUEST_URI'],'/');
 		//入口文件名字
-		$data['in_name'] = basename($_SERVER['SCRIPT_NAME']);
+		$this->in_name = basename($_SERVER['SCRIPT_NAME']);
 		//入口文件目录
 		$in_dir_name = trim(dirname($_SERVER['SCRIPT_NAME']),'\/');
-		$data['in_dir'] = $in_dir_name ? $in_dir_name .'/' : '';
+		$this->in_dir = $in_dir_name ? $in_dir_name .'/' : '';
 		//根据HTTP判断字符
 		$http_str = is_https() ? 'https://' : 'http://';
 		//完整URL
-		$data['url'] = $http_str.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'];
+		$this->url = $http_str.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'];
 		//域名
-		$data['domain'] = $_SERVER['SERVER_NAME'];
+		$this->domain = $_SERVER['SERVER_NAME'];
 		//根路径
-		$data['base_url'] = $http_str.$_SERVER['HTTP_HOST'].'/';
+		$this->base_url = $http_str.$_SERVER['HTTP_HOST'].'/';
 		//项目路径
-		$data['web_url'] = $data['base_url'].$data['in_dir'];
+		$this->web_url = $this->base_url.$this->in_dir;
 		
 
 		$uri = parse_url($_SERVER['REQUEST_URI']);
@@ -127,7 +104,7 @@ class URI {
 		$uri = $this->_del_uri_suffix($uri);
 
 		//完整的URI参数段
-		$data['uri_all'] = ltrim($uri,'/').'?'.$query;
+		$this->uri_all = ltrim($uri,'/').'?'.$query;
 
 		if (trim($uri, '/') === '' && strncmp($query, '/', 1) === 0){
 			$query = explode('?', $query, 2);
@@ -140,7 +117,7 @@ class URI {
 		parse_str($_SERVER['QUERY_STRING'], $_GET);
 
 		if ($uri === '/' OR $uri === ''){
-			$data['uri_str'] = '/';
+			$this->uri_str = '/';
 		}
 		//处理成想要的URI段
 		$uris = array();
@@ -152,25 +129,27 @@ class URI {
 			$tok = strtok('/');
 		}
 		
-		$data['uri_arr'] = $uris;
-		$data['uri_str'] = implode('/', $uris);
-
-		return $data;
+		$this->uri_arr = $uris;
+		$this->uri_str = implode('/', $uris);
 	}
 	
 	//控制器目录及方法参数处理
-	private function _get_cm($uri_arr){
-		$data = array('c_dir' => '','c_name' => '','m_name' => '','m_arr' => array());
+	private function _get_cm(){
+		$v_str = '';
 		$c_dir = '';
 		$m_arr = array();
 		$i = 0;
 		$a = 0;
-		foreach ($uri_arr as $k=>$v){
-			if( file_exists(APP_PATH.'controllers/'.$v.'.php') && $i === 0 ){
+		foreach ($this->uri_arr as $k=>$v){
+			$v_str .= $v.'/';
+			if( $i === 0 && file_exists(APP_PATH.'controllers/'.rtrim($v_str,'/').'.php') ){
 				$i = $k+1;
-				$data['c_name'] = $v;
-				$data['m_name'] = $uri_arr[$i];
+				//控制器名称
+				$this->c_name = $v;
+				//方法名
+				$this->m_name = isset($this->uri_arr[$i]) ? $this->uri_arr[$i] : '';
 			}
+
 			if($i>0){
 				if($a>1){
 					$m_arr[] = $v;
@@ -179,12 +158,14 @@ class URI {
 			}else{
 				$c_dir .= $v.'/';
 			}
+
 		}
+		
+		//控制器所在目录
+		$this->c_dir = $c_dir;
+		//方法参数
+		$this->m_arr = $m_arr;
 
-		$data['c_dir'] = $c_dir;
-		$data['m_arr'] = $m_arr;
-
-		return $data;
 	}
 
 	//处理隐藏入口文件的URL
