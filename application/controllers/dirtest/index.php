@@ -22,7 +22,7 @@
 			//echo $this->rs();		//MY_Controller扩展控制器中的方法
 			//** //数据库操作测试
 			$re = $this->db->table('main_keylib')->where(array('status'=>'1'))->fields(array('id','title'))->limit(2,3)->get();
-			$row = $re->result();
+			$row = $re->result_one();
 			$sql = $re->num_rows();
 
 //			$arr = array('title'=>'小李323','ckey'=>'test144');
@@ -159,5 +159,13 @@
 			$data = ob_get_contents();
 			ob_end_clean ();
 			file_put_contents('./tmp/text.php',$data);
+		}
+
+		public function viewtest(){
+
+			$this->assign('title','测试布局');
+			$this->assign('body','这是一个测试网页内容的例子。。。。');
+			$this->layout('layout');
+			$this->display('view_test');
 		}
 	}
