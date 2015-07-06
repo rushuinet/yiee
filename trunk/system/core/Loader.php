@@ -57,7 +57,8 @@
 	 * @author	Rushui
 	 */
 	public function view($name,$data=array(),$way=false){
-		$this->view->display($name,$data,$way);
+		$obj = Controller::get_instance();
+		$obj->view->display($name,$data,$way);
 	}
 
 	/**
@@ -204,7 +205,7 @@
 		}
 
 		//系统核心
-		$this->_inc_core(array('Config','Lang','Common','Benchmark','URI','View'));
+		$this->_inc_core(array('Config','Lang','Common','Benchmark','URI'));
 
 		//数据库操作类
 		require_once(SYS_PATH.'database/DB.php');
@@ -212,8 +213,8 @@
 		//自动加载
 		$this->_init_auto();
 
-		//加载控制器与model基类
-		$this->_inc_core(array('Controller','Model'));
+		//加载MVC基类
+		$this->_inc_core(array('Model','View','Controller'));
 
 	}
 	
@@ -223,8 +224,8 @@
 			$path = 'core/'.$v.'.php';
 			//核心类可替换
 			$this->_inc_file($path);
-			$ext_path = APP_PATH.'core/'.Yiee::conf('class_prefix').$v.'.php';;
 			//加载扩展核心类
+			$ext_path = APP_PATH.'core/'.Yiee::conf('class_prefix').$v.'.php';
 			if( file_exists($ext_path) ){
 				require_once($ext_path);
 			}

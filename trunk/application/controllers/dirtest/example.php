@@ -5,7 +5,7 @@
 	 * @author	Rushui
 	 */
 
-	class index extends MY_Controller{
+	class example extends MY_Controller{
 
 		//构造方法
 		public function __construct(){
@@ -165,7 +165,8 @@
 
 			$this->assign('title','测试布局');
 			$this->assign('body','这是一个测试网页内容的例子。。。。');
+			$this->assign('run_time',$this->benchmark->run_time());
 			$this->layout('layout');
-			$this->display('view_test');
+			$this->load->view('view_test');
 		}
 	}
