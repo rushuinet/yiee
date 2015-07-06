@@ -57,30 +57,7 @@
 	 * @author	Rushui
 	 */
 	public function view($name,$data=array(),$way=false){
-		if(empty($name)){
-			return false;
-		}
-		$view_path = Yiee::conf('view_path');
-		$view_suffix = Yiee::conf('view_suffix') ? Yiee::conf('view_suffix') : '.php';
-		if( empty($view_path) ){
-			$path = APP_PATH.'views/'.$name.$view_suffix;
-		}else{
-			$path = IN_PATH.$view_path.'\\'.$name.$view_suffix;
-		}
-		echo IN_PATH;
-		echo '<br />';
-		echo $path;
-		echo '<br />';
-		extract($data);
-		if($way===true){
-			ob_start ();
-			include($path);
-			$data = ob_get_contents();
-			ob_end_clean ();
-			return $data;
-		}else{
-			include($path);
-		}
+		$this->view->display($name,$data,$way);
 	}
 
 	/**
@@ -227,7 +204,7 @@
 		}
 
 		//系统核心
-		$this->_inc_core(array('Config','Lang','Common','Benchmark','URI'));
+		$this->_inc_core(array('Config','Lang','Common','Benchmark','URI','View'));
 
 		//数据库操作类
 		require_once(SYS_PATH.'database/DB.php');

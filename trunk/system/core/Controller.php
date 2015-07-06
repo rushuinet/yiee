@@ -21,4 +21,19 @@
 		public static function &get_instance(){
 			return self::$instance;
 		}
+
+		//分配视图变量
+		public function assign($name,$value=''){
+			$this->view->assign($name,$value);
+		}
+
+		//分配布局
+		public function layout($name){
+			$this->view->layout($name);
+		}
+
+		//输出视图
+		public function display($name,$data=array(),$way=false){
+			$this->view->display($name,$data,$way);
+		}
 	}

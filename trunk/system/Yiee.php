@@ -75,6 +75,11 @@ class Yiee{
 		$URI->m_name = is_set($URI->m_name,self::$config['default_method']);
 		self::$objs['uri'] = $URI;
 	}
+
+	//初始化视图类
+	private static function _init_view(){
+		self::$objs['view'] = new View();
+	}
 	
 	//初始化控制器
 	private static function _init_controller(){
@@ -107,6 +112,7 @@ class Yiee{
 		self::_init_config();
 		self::_init_lang();
 		self::_init_uri();
+		self::_init_view();
 		self::_init_controller();
 	}
 
