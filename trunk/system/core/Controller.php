@@ -27,6 +27,11 @@
 			$this->view->assign($name,$value);
 		}
 
+		//设置模板
+		public function template($name){
+			$this->view->template($name);
+		}
+
 		//分配布局
 		public function layout($name){
 			$this->view->layout($name);

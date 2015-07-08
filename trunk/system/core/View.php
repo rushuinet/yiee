@@ -5,10 +5,13 @@
  * @author	Rushui
  */
 class View{
-	//模板输出变量
-	 protected $_view_data = array();
+
+	//模板目录
+	protected $_template_dir = '';
 	//布局文件
-	 protected $_layout_path = '';
+	protected $_layout_file = '';
+	//模板输出变量
+	protected $_view_data = array();
 
 	/**
 	 * 模板变量赋值
@@ -24,25 +27,21 @@ class View{
 	}
 	
 	/**
-     * 取得模板变量的值
+     * 模板目录
      * @param string $name
-     * @return mixed
      */
-    public function get($name=''){
-        if($name === '') {
-            return $this->_view_data;
-        }
-        return isset($this->_view_data[$name])?$this->_view_data[$name]:false;
+    public function template($name=''){
+        $this->_template_dir = $name.'/';
     }
+
 	
 	/**
 	 * 视图布局
 	 * @param mixed $name
-	 * @param mixed $value
 	 */
 	public function layout($name){
 		$file_suffix = $this->get_suffix($name);
-		$this->_layout_path = $name.$file_suffix;
+		$this->_layout_file = $name.$file_suffix;
 	}
 
 	/**
@@ -60,9 +59,9 @@ class View{
 		//路径组装
 		$__view_path__ = Yiee::conf('view_path');
 		if( empty($__view_path__) ){
-			$__view_path__ = APP_PATH.'views/';
+			$__view_path__ = APP_PATH.'views/'.$this->_template_dir;
 		}else{
-			$__view_path__ = IN_PATH.$__view_path__.'/';
+			$__view_path__ = IN_PATH.$__view_path__.'/'.$this->_template_dir;
 		}
 		
 		//视图后缀
@@ -73,7 +72,7 @@ class View{
 			$this->assign($__data__);
 		}
 		
-		extract($this->_view_data);
+		extract($this->_view_data,EXTR_SKIP);
 		
 		//引入视图文件
 		ob_start ();
@@ -82,12 +81,12 @@ class View{
 		ob_end_clean();
 
 		//是否有布局文件
-		if( empty($this->_layout_path) ){
+		if( empty($this->_layout_file) ){
 			$view = $__view__;
 		}else{
 			$__view__ = trim($__view__) . "\r\n";
 			ob_start ();
-			include($__view_path__.$this->_layout_path);
+			include($__view_path__.$this->_layout_file);
 			$view = ob_get_contents();
 			ob_end_clean ();
 		}
