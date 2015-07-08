@@ -70,10 +70,7 @@ class Yiee{
 
 	//初始化URI
 	private static function _init_uri(){
-		$URI = URI::getInstance();
-		$URI->c_name = is_set($URI->c_name,self::$config['default_controller']);
-		$URI->m_name = is_set($URI->m_name,self::$config['default_method']);
-		self::$objs['uri'] = $URI;
+		self::$objs['uri'] = URI::getInstance();
 	}
 
 	//初始化视图类
