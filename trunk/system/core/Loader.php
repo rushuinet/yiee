@@ -27,32 +27,32 @@
 		}
 		if( is_array($name) ){
 			foreach ($name as $v){
-				$this->_inc_config($v);
+				Yiee::$config[$v] = $arr[$v] = $this->_inc_config($v);
 			}
 		}else{
-			$this->_inc_config($name,$way);
+			Yiee::$config[$name] = $arr = $this->_inc_config($name);
+		}
+
+		if($way === true){
+			return $arr;
 		}
 	}
 	//辅助配置装载
-	private function _inc_config($name,$way=false){
+	private function _inc_config($name){
 		$env_path = APP_PATH.'config/'.ENVIRONMENT.'/'.$name.'.php';
 		if( file_exists($env_path) ){
 			$arr = include($env_path);
 		}else{
 			$arr = include(APP_PATH.'config/'.$name.'.php');
 		}
-		if($way === true){
-			return $arr;
-		}else{
-			Yiee::$config[$name] = $arr;
-		}
+		return $arr;
 	}
 	
 	/**
 	 * 加载视图
 	 * param	$name	视图文件
 	 * param	$data	分配的数据
-	 * param	$way	输出方式(true返回字符串,false直接引入文件)
+	 * param	$way	输出方式(true返回字符串,false直接输出)
 	 * @E-mail	rushui@qq.com
 	 * @author	Rushui
 	 */
@@ -75,11 +75,11 @@
 		}
 		if( is_array($name) ){
 			foreach ($name as $v ){
-				$this->_inc_file('libraries/'.$v.'.php');
+				$this->_inc_sys_file($v,'libraries');
 				$this->_ins_class($v);
 			}
 		}else{
-			$this->_inc_file('libraries/'.$name.'.php');
+			$this->_inc_sys_file($name,'libraries');
 			$this->_ins_class($name,$alias,$config);
 		}
 		
@@ -120,10 +120,14 @@
 		}
 		if( is_array($name) ){
 			foreach ($name as $v){
-				$this->_inc_file('helpers/'.$v.'.php');
+				//扩展
+				$this->_inc_ext_file($v.'_helper','helpers');
+				$this->_inc_sys_file($v.'_helper','helpers');
 			}
 		}else{
-			$this->_inc_file('helpers/'.$name.'.php');
+			//扩展(先加载扩展可对系统函数重定义)
+			$this->_inc_ext_file($v.'_helper','helpers');
+			$this->_inc_sys_file($v.'_helper','helpers');
 		}	
 	}
 
@@ -221,14 +225,10 @@
 	//引入系统核心
 	private function _inc_core($sys_list){
 		foreach ($sys_list as $v ){
-			$path = 'core/'.$v.'.php';
 			//核心类可替换
-			$this->_inc_file($path);
+			$this->_inc_sys_file($v,'core');
 			//加载扩展核心类
-			$ext_path = APP_PATH.'core/'.Yiee::conf('class_prefix').$v.'.php';
-			if( file_exists($ext_path) ){
-				require_once($ext_path);
-			}
+			$this->_inc_ext_file($v,'core');
 			
 		}
 	}
@@ -257,12 +257,21 @@
 	}
 
 	//优先引用APP_PATH中的文件
-	private function _inc_file ($path){
+	private function _inc_sys_file ($name,$dir=''){
+		$path = $dir.'/'.$name.'.php';
 		$app_path = APP_PATH.$path;
 		if( file_exists($app_path) ){
 			require_once($app_path);
 		}else{
 			require_once(SYS_PATH.$path);
+		}
+	}
+
+	//引入扩展文件
+	private function _inc_ext_file($name,$dir=''){
+		$ext_path = APP_PATH.$dir.'/'.Yiee::conf('class_prefix').$name.'.php';
+		if( file_exists($ext_path) ){
+			require_once($ext_path);
 		}
 	}
 	
