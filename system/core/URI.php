@@ -11,7 +11,7 @@ class URI {
 	private $complete = '';			//完整URI（framework/index.php/dir/c/m/add/new.html?id=5&s=yy）
 	private $uri_all = '';			//完整的URI参数段（dir/c/m/add/new.html?id=5&s=yy）
 	private $uri_str = '';			//URI段字符串（dir/c/m）
-	private $uri_arr = array();		//URI段组成的数组( array(dir,c,m) )
+	private $uri_arr = array();		//URI段组成的数组( array(dir,c,m,param) )
 	private $in_name = '';			//入口文件名称（index.php）
 	private $in_dir = '';			//入口文件所在目录（framework/）
 	private $c_dir = '';			//控制器所在目录（dir/）
@@ -57,9 +57,23 @@ class URI {
 	//初始化URI类
 	private function _init(){
 		//取URI段
-		$arr = $this->_get_uri();	
+		$this->_get_uri();	
 		//控制器目录/控制器/方法/方法参数
-		$mc = $this->_get_cm();
+		$this->_get_cm();
+		//URI组装默认控制器和方法
+		$this->_set_default();
+	}
+
+	//URI组装默认控制器和方法
+	private function _set_default(){
+		if(empty($this->c_name)){
+			$this->c_name = Yiee::$config['default_controller'];
+			array_push($this->uri_arr,Yiee::$config['default_controller']);
+		}
+		if(empty($this->m_name)){
+			$this->m_name = Yiee::$config['default_method'];
+			array_push($this->uri_arr,Yiee::$config['default_method']);
+		}
 	}
 
 
