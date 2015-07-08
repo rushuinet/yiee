@@ -69,7 +69,7 @@
 	 * @E-mail	rushui@qq.com
 	 * @author	Rushui
 	 */
-	public function library($name,$config=array(),$alias=''){
+	public function library($name,$alias='',$config=array()){
 		if(empty($name)){
 			return false;
 		}
@@ -80,7 +80,7 @@
 			}
 		}else{
 			$this->_inc_file('libraries/'.$name.'.php');
-			$this->_ins_class($name,$config,$alias);
+			$this->_ins_class($name,$alias,$config);
 		}
 		
 	}
@@ -103,7 +103,7 @@
 			}
 		}else{
 			require_once(APP_PATH.'models/'.$name.'.php');
-			$this->_ins_class($name,array(),$alias);
+			$this->_ins_class($name,$alias,array());
 		}
 		
 	}
@@ -267,7 +267,7 @@
 	}
 	
 	//实例化类并加入到对象实例中：Yiee::$objs['objname']
-	private function _ins_class($name,$config=array(),$alias=''){
+	private function _ins_class($name,$alias='',$config=array()){
 		$class_name = get_filenmae($name);
 		$obj = new $class_name($config);
 		if($alias){
@@ -283,7 +283,7 @@
 	 * @author	Rushui
 	 */
 	public function set_obj($name,$obj_name){
-		
+		$name = strtolower($name); //转小写
 		if(empty($name) || !is_object($obj_name)){
 			return false;
 		}
