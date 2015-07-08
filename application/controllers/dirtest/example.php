@@ -43,7 +43,7 @@
 			var_dump(Yiee::$lang);
 			var_dump($this->lang->line('sys_add'));
 			// **/
-			//** //加载类库
+			/** //加载类库
 			$this->load->library('cc/bbb');
 			$this->bbb->dss();
 			$this->load->library('Validation','vali');

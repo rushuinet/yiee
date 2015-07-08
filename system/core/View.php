@@ -48,7 +48,7 @@ class View{
 	 * 输出视图
 	 * param	$__name__	视图文件
 	 * param	$__data__	分配的数据
-	 * param	$__way__	输出方式(true返回字符串,false直接引入文件)
+	 * param	$__way__	输出方式(true返回字符串,false直接输出)
 	 * @E-mail	rushui@qq.com
 	 * @author	Rushui
 	 */
