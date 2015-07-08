@@ -43,11 +43,11 @@
 			var_dump(Yiee::$lang);
 			var_dump($this->lang->line('sys_add'));
 			// **/
-			/** //加载类库
+			//** //加载类库
 			$this->load->library('cc/bbb');
 			$this->bbb->dss();
-			$this->load->library('aaa');
-			$this->aaa->dss();
+			$this->load->library('Validation','vali');
+			$this->vali->check();
 			// **/
 			/** //helper测试(与系统同名，优先使用APP下文件)
 			$this->load->helper('sys');
@@ -162,11 +162,33 @@
 		}
 
 		public function viewtest(){
-
 			$this->assign('title','测试布局');
 			$this->assign('body','这是一个测试网页内容的例子。。。。');
 			$this->assign('run_time',$this->benchmark->run_time());
 			$this->layout('layout');
 			$this->load->view('view_test');
+		}
+
+		public function vali(){
+
+			$this->load->library('Validation','vali');
+
+			if (isset($_POST['send'])) {
+				$b = $this->vali->check(array(
+					//'username'=>array('s6-10|n6-10|r/^[1]{3}$/|s5,','用户名格式不正确'),
+					'password'=>array('s2,','密码格式不正确'),
+					'repeat_password'=>array('fpassword|n10,','密码确认格式不正确'),
+					//'email'=>array('e&s10,|n10,','Email格式不正确'),
+					//'remark'=>array('n10&s10','备注不能为空'),
+					//'phone'=>array('s10,','电话格式不正确！！！'),
+					//'remark'=>array('_check','8959','备注格式不正逗趣儿 '),//外部函数，函数名前名必须加上_
+					//'remark'=>array(new B(),'test','8959','备注格式不正逗趣儿 '),
+				), $_POST);
+				if(isset($b['rs_status'])) {
+					echo $b['rs_error'] .'<br />';
+				}
+				var_dump($b);
+			}
+			$this->display('vali');
 		}
 	}

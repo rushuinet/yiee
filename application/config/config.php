@@ -9,7 +9,7 @@ return array(
 	'default_controller'=>'index',
 	//默认方法
 	'default_method'=>'index',
-	//视图路径(为空调用APP_PATH/views)
+	//视图路径(默认为APP_PATH/views)
 	'view_path'=>'tpl',
 	//view后缀(为空则为.php)
 	'view_suffix'=>'.html',
@@ -19,5 +19,7 @@ return array(
 	'url_suffix'=>'.html',
 	//默认语言
 	'default_lang'=>'zh-cn',
+	//缓存目录(默认为APP_PATH/cache)
+	'cache_path'=>'',
 	
 );
