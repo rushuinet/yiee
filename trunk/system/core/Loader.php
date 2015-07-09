@@ -197,7 +197,7 @@
 	 * @author	Rushui
 	 */
 	public function inc_class($name){
-		if( class_exists($name) ){
+		if( !class_exists($name) ){
 			//引入类文件
 			$this->_inc_sys_file($name,'libraries');
 		}
