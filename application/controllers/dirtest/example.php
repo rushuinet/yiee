@@ -191,4 +191,10 @@
 			}
 			$this->display('vali');
 		}
+
+		public function html(){
+			$this->load->inc_class('HTML');
+			echo HTML::input('username','文本框');
+			echo HTML::a('测试链接');
+		}
 	}
