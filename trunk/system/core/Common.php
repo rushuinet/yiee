@@ -11,6 +11,11 @@ function log_msg($msg,$type='err'){
 	die($type.' : '.$msg);
 }
 
+//页面不存在
+function show_404(){
+	die('页面不存在');
+}
+
 //实例化model
 function M($name){
 	$model_name = $name.'_model';

@@ -52,41 +52,28 @@ class Yiee{
 		
 	}
 	
-	//初始化基准类
-	private static function _init_benchmark(){
+	//初始化核心类
+	private static function _init(){
 		self::$objs['benchmark'] = new benchmark();
-		self::$objs['benchmark']->mark('sys_start');
-	}
-
-	//初始化配置
-	private static function _init_config(){
 		self::$objs['config'] = new Config();
-	}
-
-	//语言
-	private static function _init_lang(){
 		self::$objs['lang'] = new Lang();
-	}
-
-	//初始化URI
-	private static function _init_uri(){
 		self::$objs['uri'] = URI::getInstance();
-	}
-
-	//初始化视图类
-	private static function _init_view(){
 		self::$objs['view'] = new View();
 	}
+
 	
 	//初始化控制器
 	private static function _init_controller(){
 		$uri = self::$objs['uri'];
 		$name = $uri->c_name;
-		require_once(APP_PATH.'controllers/'.$uri->c_dir.$name.'.php');
+		if( file_exists(APP_PATH.'controllers/'.$uri->c_dir.$name.'.php') ){
+			require_once(APP_PATH.'controllers/'.$uri->c_dir.$name.'.php');
+		}else{
+			show_404();
+		}
 		$obj = new $name();
 		call_user_func_array(array($obj, $uri->m_name), $uri->m_arr );
 	}
-	
 	
 	/**
 	 * 输出配置项(与$this->config->item()相同)
@@ -105,11 +92,7 @@ class Yiee{
 	//运行初始化
 	public static function run(){
 		self::start();
-		self::_init_benchmark();
-		self::_init_config();
-		self::_init_lang();
-		self::_init_uri();
-		self::_init_view();
+		self::_init();
 		self::_init_controller();
 	}
 
