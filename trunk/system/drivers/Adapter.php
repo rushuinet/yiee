@@ -6,6 +6,8 @@
  */
 
 class Adapter {
-	protected $_map = array();	//适配器映射
+
+	//有效驱动
+	protected $valid_drivers = array();
 
 }
