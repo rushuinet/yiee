@@ -22,7 +22,8 @@
 			//echo $this->rs();		//MY_Controller扩展控制器中的方法
 			//** //数据库操作测试
 			$re = $this->db->table('main_keylib')->where(array('status'=>'1'))->fields(array('id','title'))->limit(5)->get();
-			$row = $re->row(2);
+			//$row = $re->result();
+			$row = $re->row(3);
 			$sql = $re->num_rows();
 
 //			$arr = array('title'=>'小李323','ckey'=>'test144');
