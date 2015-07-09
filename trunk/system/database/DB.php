@@ -6,11 +6,11 @@
  */
 class DB{
 	//有效的驱动
-	protected $valid_drivers = array('mysql','mysqli');
+	protected static $valid_drivers = array('mysql','mysqli');
 
 	//初始化
 	public static function init($dbtype,$config) {
-		if( !in_array($dbtype,$valid_drivers) ){
+		if( !in_array($dbtype,self::$valid_drivers) ){
 			log_msg('无效的数据库驱动！',__CLASS__);		//此处引用了公共函数
 		}
 		$dbtype = 'DB_'.$dbtype;
