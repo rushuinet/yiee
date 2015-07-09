@@ -191,6 +191,19 @@
 		}
 	}
 
+	/**
+	 * 引用类文件
+	 * @E-mail	rushui@qq.com
+	 * @author	Rushui
+	 */
+	public function inc_class($name){
+		if( class_exists($name) ){
+			//引入类文件
+			$this->_inc_sys_file($name,'libraries');
+		}
+
+	}
+
 	//初始化
 	private function _init(){
 		//常量

@@ -65,7 +65,7 @@ class Yiee{
 	//初始化控制器
 	private static function _init_controller(){
 		$uri = self::$objs['uri'];
-		$name = $uri->c_name;
+		$name = ucfirst($uri->c_name);
 		if( file_exists(APP_PATH.'controllers/'.$uri->c_dir.$name.'.php') ){
 			require_once(APP_PATH.'controllers/'.$uri->c_dir.$name.'.php');
 		}else{
