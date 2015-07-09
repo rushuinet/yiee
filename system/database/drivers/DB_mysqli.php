@@ -197,12 +197,16 @@ class DB_mysqli{
 	}
 
 	//一条记录
-	public function result_one(){
-		$row = array();
+	public function row($line=0){
+		$i = 0;
 		if( $this->num_rows() > 0){
-			$row = mysqli_fetch_assoc($this->res);
+			while( $row = mysqli_fetch_assoc($this->res) ) {
+				if($i === $line){
+					return $row;
+				}
+				$i++;
+			}
 		}
-		return $row;
 	}
 	
 	//返回最后查询语句
