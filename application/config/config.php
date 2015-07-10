@@ -21,5 +21,7 @@ return array(
 	'default_lang'=>'zh-cn',
 	//缓存目录(默认为APP_PATH/cache)
 	'cache_path'=>'',
+	//缓存后缀
+	'cache_suffix'=>'.data',
 	
 );

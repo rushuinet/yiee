@@ -68,11 +68,12 @@ class Yiee{
 		$name = ucfirst($uri->c_name);
 		if( file_exists(APP_PATH.'controllers/'.$uri->c_dir.$name.'.php') ){
 			require_once(APP_PATH.'controllers/'.$uri->c_dir.$name.'.php');
-		}else{
-			show_404();
+			$obj = new $name();
+			if( method_exists($obj,$uri->m_name) ){
+				call_user_func_array(array($obj, $uri->m_name), $uri->m_arr );die;
+			}
 		}
-		$obj = new $name();
-		call_user_func_array(array($obj, $uri->m_name), $uri->m_arr );
+		show_404();		
 	}
 	
 	/**
