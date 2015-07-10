@@ -39,11 +39,11 @@
 	}
 	//辅助配置装载
 	private function _inc_config($name){
+		$arr = include(APP_PATH.'config/'.$name.'.php');
 		$env_path = APP_PATH.'config/'.ENVIRONMENT.'/'.$name.'.php';
 		if( file_exists($env_path) ){
-			$arr = include($env_path);
-		}else{
-			$arr = include(APP_PATH.'config/'.$name.'.php');
+			$evn_arr = include($env_path);
+			$arr = array_merge($arr,$evn_arr);
 		}
 		return $arr;
 	}
@@ -234,12 +234,7 @@
 			require_once(APP_PATH.'config/constants.php');
 		}
 		//配置文件
-		$config_path = APP_PATH.'config/'.ENVIRONMENT.'/config.php';
-		if( file_exists($config_path) ){
-			Yiee::$config = include($config_path);
-		}else{
-			Yiee::$config = include(APP_PATH.'config/config.php');
-		}
+		Yiee::$config = $this->_inc_config('config');
 
 		//系统核心
 		$this->_inc_core(array('Config','Lang','Common','Benchmark','URI'));
