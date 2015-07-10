@@ -12,7 +12,7 @@ class Cache_file {
 	
 	public function __construct($config = array()){
 		$this->_cache_path = Yiee::$config['cache_path'] ? IN_PATH.Yiee::$config['cache_path'] : APP_PATH.'cache/';
-		$this->_cache_suffix = empty(Yiee::$config['cache_suffix']) ? '.php' : ('.'.Yiee::$config['cache_suffix']);
+		$this->_cache_suffix = empty(Yiee::$config['cache_suffix']) ? '.php' : Yiee::$config['cache_suffix'];
 	}
 
 	//保存
