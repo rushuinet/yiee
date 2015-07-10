@@ -86,6 +86,26 @@
 	}
 
 	/**
+	 * 加载适配器
+	 * param	$name 类名称 （为数组时为批量加载，不支持传配置）
+	 * param	$config 配置文件
+	 * @E-mail	rushui@qq.com
+	 * @author	Rushui
+	 */
+	public function driver($name,$config=array()){
+
+		if(empty($name)){return false;}
+		$name = ucfirst($name);	//类名首字母大写
+
+		//引入文件
+		$this->_inc_sys_file($name,'drivers/'.$name);
+		$obj = new $name();
+		$obj->init();
+		//加入到超级对象
+		$this->set_obj($name,$obj);
+	}
+
+	/**
 	 * 加载model
 	 * param	$name 模型名称（为数组时为批量加载，不支持定义别名）
 	 * param	$alias 对象别名

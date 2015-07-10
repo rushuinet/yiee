@@ -56,6 +56,25 @@ function get_filenmae($name){
 	$arr = explode('/',$name);
 	return end($arr);
 }
+//创建多级目录
+function mkpath($mkpath,$mode=0777){
+	$path_arr=explode('/',$mkpath);
+	foreach ($path_arr as $value){
+		if(!empty($value)){
+			if(empty($path))$path=$value;
+			else $path.='/'.$value;
+			is_dir($path) or mkdir($path,$mode);
+		}
+	}
+}
+//写文件，自动创建目录(默认为当前目录)
+function write_file($path,$data=''){
+	$dir = dirname($path);
+	if(!is_dir($dir)){
+		mkpath($dir);
+	}
+	return file_put_contents($path,$data);
+}
 
 /**
  * 转换字符串： dir/name 返回dir_name
