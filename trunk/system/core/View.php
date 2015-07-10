@@ -91,10 +91,15 @@ class View{
 			ob_end_clean ();
 		}
 		
+		
 		//输出方式
 		if($__way__===true){
 			return $view;
 		}else{
+			//生成静态
+			if( is_string($__way__) && !file_exists($__way__) ){
+				write_file($__way__,$view);
+			}
 			echo $view;
 		}
 	}

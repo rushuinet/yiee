@@ -198,4 +198,10 @@
 			echo HTML::input('username','文本框');
 			echo HTML::a('测试链接');
 		}
+
+		public function cache(){
+			$this->load->driver('cache');
+			$this->cache->save('sdfasf/adfadsf',array('bbadsfasdfdafb'),10);
+			var_dump($this->cache->get('sdfasf/adfadsf'));
+		}
 	}
